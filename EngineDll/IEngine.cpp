@@ -21,12 +21,18 @@ namespace EngineDll
 		m_EngineImpl->Load(nativeSFile);
 	}
 
-	System::String^ IEngine::MarkClones(CloneConstrain^ cloneConstrain, array<System::Drawing::Point^>^ %features)
+	System::String^ IEngine::MarkClones(ConstrainSettings^ ConstrainSettings, int% actualCnt, array<MPoint^>^ %features)
 	{
 
 		//System::String^ MyString = gcnew System::String(Model.c_str());
 		std::vector<cv::Point> pts;
-		std::string resFile = m_EngineImpl->MarkClones(cloneConstrain, pts);
+		std::string resFile = m_EngineImpl->MarkClones(ConstrainSettings, pts);
+		int i = 0;
+		for (auto pt : pts)
+		{
+			MPoint^ sysPoint = gcnew MPoint(pt.x, pt.y);
+			features[i++] = sysPoint;
+		}
 		return gcnew System::String(resFile.c_str());
 	}
 

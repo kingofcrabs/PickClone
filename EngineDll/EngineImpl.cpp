@@ -9,9 +9,6 @@ EngineImpl::EngineImpl()
 
 }
 
-
-
-
 CvPoint  EngineImpl::CalcuMassCenter(vector<cv::Point> contour)
 {
 	CvPoint center;
@@ -110,13 +107,12 @@ void EngineImpl::GetCircleROI(Mat& src)
 }
 
 
-
-vector<vector<cv::Point>> EngineImpl::MarkAllContours(Mat& src, string filePath2Save)
+vector<vector<cv::Point>> EngineImpl::MarkAllContours(Mat& src,ConstrainSettings^ constrainSettings, string filePath2Save)
 {
 	Mat tmp = src.clone();
 	vector<vector<cv::Point>> contours;
-	int minPts = 10;
-	int maxPts = 500;
+	int minPts = constrainSettings->minSize;
+	int maxPts = constrainSettings->maxSize;
 	Mat gray;
 	cvtColor(tmp, gray, CV_BGR2GRAY);
 	//adaptiveThreshold(gray, gray, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY_INV, 11, 5);
@@ -143,7 +139,6 @@ vector<vector<cv::Point>> EngineImpl::MarkAllContoursGray(Mat& src, Mat& org)
 	Mat gray = src.clone();
 	Mat tmp = org.clone();
 
-
 	vector<vector<cv::Point>> contours;
 	int minPts = 10;
 	int maxPts = 500;
@@ -163,9 +158,6 @@ vector<vector<cv::Point>> EngineImpl::MarkAllContoursGray(Mat& src, Mat& org)
 }
 
 
-
-
-
 void EngineImpl::Load(string sFile)
 {
 	int index = sFile.rfind("\\");
@@ -174,9 +166,9 @@ void EngineImpl::Load(string sFile)
 	GetCircleROI(img);
 }
 
-string EngineImpl::MarkClones(CloneConstrain^ constrains, std::vector<cv::Point>& centers)
+string EngineImpl::MarkClones(ConstrainSettings^ constrains, std::vector<cv::Point>& centers)
 {
 	string resultFile = workingFolder + "\\clones.jpg";
-	MarkAllContours(img, resultFile);
+	MarkAllContours(img, constrains,resultFile);
 	return resultFile;
 }

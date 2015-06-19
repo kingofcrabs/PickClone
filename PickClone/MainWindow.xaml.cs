@@ -33,14 +33,11 @@ namespace PickClone
 
         private void btnApply_Click(object sender, RoutedEventArgs e)
         {
-            //PickCloneEngineLib.IOpencvCom engine = new PickCloneEngineLib.OpencvComClass();
-            //string sRet = engine.SayHello("From me to you");
-            //engine.Load(@"F:\temp\test.jpg");
-            //string resFile;
-            //engine.MarkClones("", out resFile);
-            //UpdateBackgroundImage(resFile);
             IEngine iEngine = new IEngine();
             iEngine.Load(@"F:\temp\test.jpg");
+            MPoint[] points = new MPoint[100];
+            int cnt = 0;
+            iEngine.MarkClones(new ConstrainSettings(10, 200),ref cnt, ref points);
         }
 
         private void UpdateBackgroundImage(string resFile)
