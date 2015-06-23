@@ -28,9 +28,13 @@ namespace EngineDll
 		std::vector<cv::Point> pts;
 		std::string resFile = m_EngineImpl->MarkClones(ConstrainSettings, pts);
 		int i = 0;
+		actualCnt = pts.size();
+		
 		for (auto pt : pts)
 		{
 			MPoint^ sysPoint = gcnew MPoint(pt.x, pt.y);
+			if (i == features->Length)
+				break;
 			features[i++] = sysPoint;
 		}
 		return gcnew System::String(resFile.c_str());

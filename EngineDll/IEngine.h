@@ -9,10 +9,18 @@ namespace EngineDll
 	public:
 		int x;
 		int y;
+		int ID = -1;
+
 		MPoint(int xx, int yy)
 		{
 			x = xx;
 			y = yy;
+		}
+		MPoint(int xx, int yy, int id)
+		{
+			x = xx;
+			y = yy;
+			ID = id;
 		}
 	};
 	public ref class IEngine

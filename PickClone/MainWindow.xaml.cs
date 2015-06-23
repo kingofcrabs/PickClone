@@ -37,13 +37,35 @@ namespace PickClone
             iEngine.Load(@"F:\temp\test.jpg");
             MPoint[] points = new MPoint[100];
             int cnt = 0;
-            iEngine.MarkClones(new ConstrainSettings(10, 200),ref cnt, ref points);
+            string markedImageFile = iEngine.MarkClones(new ConstrainSettings(10, 200),ref cnt, ref points);
+            UpdateBackgroundImage(markedImageFile);
+            List<MPoint> pts = GetFirst5Pts(points,cnt);
+            resultCanvas.SetMarkFlags(pts);
+        }
+
+        private List<MPoint> GetFirst5Pts(MPoint[] points,int cnt)
+        {
+            int cntConstrain;
+            bool bok = int.TryParse(txtCnt.Text, out cntConstrain);
+            
+            int min = Math.Min(cnt, 5);
+            var pts =  new List<MPoint>();
+            Random rnd=new Random();
+            points = points.OrderBy(x => rnd.Next()).ToArray();
+            for (int i = 0; i < min; i++)
+            {
+                pts.Add(new MPoint(points[i].x, points[i].y, i + 1));
+            }
+            return pts;
         }
 
         private void UpdateBackgroundImage(string resFile)
         {
             var imgSource = Helper.BitmapFromFile(resFile);
-            imgHolder.Background = new ImageBrush(imgSource);
+            ImageBrush imgBrush = new ImageBrush();
+            imgBrush.ImageSource = imgSource;
+            resultCanvas.Background = imgBrush;
+            resultCanvas.ImageSize = new Size(imgSource.Width, imgSource.Height);
         }
     }
 }

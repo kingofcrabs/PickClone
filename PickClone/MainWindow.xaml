@@ -11,24 +11,38 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="300"/>
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="400"/>
-            <RowDefinition Height= "*"/>
-        </Grid.RowDefinitions>
-        <Grid Name="imgHolder" Background="LightYellow" Grid.RowSpan="2">
-            
-        </Grid>
+        <local:MarkCanvas x:Name="resultCanvas" Background="LightYellow" Grid.RowSpan="2">
+        </local:MarkCanvas>
         <GroupBox Grid.Column="1" Header="设置" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="200"/>
                     <RowDefinition Height= "*"/>
                     <RowDefinition Height= "40"/>
                 </Grid.RowDefinitions>
-                
-                <StackPanel>
-                    
-                        <local:RangeSlider x:Name="slider"
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height= "40"/>
+                        <RowDefinition Height= "40"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width= "0.5*"/>
+                        <ColumnDefinition Width= "0.5*"/>
+
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="数量：" VerticalAlignment="Center" />
+                    <TextBox Name="txtCnt" VerticalAlignment="Center" TextWrapping="Wrap" Text="5" Grid.Column="1"/>
+                    <Label Grid.Row="1" VerticalAlignment="Center">
+                        <TextBox Height="23" TextWrapping="Wrap" Text="TextBox" Width="120"/>
+                    </Label>
+                    <RadioButton Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" Content="面积最大" IsChecked="True"/>
+                    <RadioButton Grid.Row="1" Grid.Column="2"  VerticalAlignment="Center" Content="随机"/>
+
+                    <!--<local:RangeSlider x:Name="slider"
                                Margin="10" 
                                LowerValue="30"
                                UpperValue="70"
@@ -40,9 +54,14 @@
                         <TextBox HorizontalAlignment="Center" Text="{Binding ElementName=slider, Path=LowerValue, Mode=TwoWay, Converter={ StaticResource double2StringConverter}}" Margin="10,1,10,1" />
                         <Label>最大</Label>
                         <TextBox Text="{Binding ElementName=slider, Path=UpperValue, Mode=TwoWay, Converter={StaticResource double2StringConverter}}" Margin="10,1,10,1" />
-                    </StackPanel>    
-                </StackPanel>
+                    </StackPanel>-->
+                </Grid>
                 <Button Grid.Row="2" Name="btnApply" Content="应用" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="btnApply_Click"/>
+                <Grid Grid.Row="1">
+                    <Label Content="提示：" HorizontalAlignment="Left" Margin="0,10,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+                    <TextBox IsReadOnly="True" Margin="0,40,0,0" VerticalAlignment="Stretch" />
+                </Grid>
+
             </Grid>
         </GroupBox>
     </Grid>

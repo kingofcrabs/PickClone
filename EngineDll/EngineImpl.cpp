@@ -9,23 +9,6 @@ EngineImpl::EngineImpl()
 
 }
 
-CvPoint  EngineImpl::CalcuMassCenter(vector<cv::Point> contour)
-{
-	CvPoint center;
-	int total = 0;
-	int x = 0;
-	int y = 0;
-	for (int j = 0; j< contour.size(); j++)
-	{
-		total++;
-		x += contour[j].x;
-		y += contour[j].y;
-	}
-	center.x = x / ((double)total);
-	center.y = y / ((double)total);
-	return center;
-}
-
 void  EngineImpl::FindContours(const cv::Mat& thresholdImg,
 	std::vector<std::vector<cv::Point>
 	>& contours,
@@ -95,7 +78,7 @@ void EngineImpl::GetCircleROI(Mat& src)
 	{
 		return;
 	}
-	CvPoint ptCenter = CalcuMassCenter(contours[0]);
+	CvPoint ptCenter = GetMassCenter(contours[0]);
 	RemovePtsNotInROI(src, ptCenter);
 	//Mat hsl;
 	//cv::cvtColor(src, hsl, CV_RGB2HLS);
@@ -134,6 +117,18 @@ enum ChannelType
 	red = 1,
 	green = 2
 };
+
+cv::Point EngineImpl::GetMassCenter(vector<cv::Point>& pts)
+{
+	int size = pts.size();
+	float totalX = 0.0, totalY = 0.0;
+	for (int i = 0; i<size; i++) {
+		totalX += pts[i].x;
+		totalY += pts[i].y;
+	}
+	return cv::Point(totalX / size, totalY / size); // condition: size != 0
+}
+
 vector<vector<cv::Point>> EngineImpl::MarkAllContoursGray(Mat& src, Mat& org)
 {
 	Mat gray = src.clone();
@@ -169,6 +164,11 @@ void EngineImpl::Load(string sFile)
 string EngineImpl::MarkClones(ConstrainSettings^ constrains, std::vector<cv::Point>& centers)
 {
 	string resultFile = workingFolder + "\\clones.jpg";
-	MarkAllContours(img, constrains,resultFile);
+	auto contours =	MarkAllContours(img, constrains,resultFile);
+	for (auto contour : contours)
+	{
+		cv::Point pt = GetMassCenter(contour);
+		centers.push_back(pt);
+	}
 	return resultFile;
 }
