@@ -13,56 +13,86 @@
         </Grid.ColumnDefinitions>
         <local:MarkCanvas x:Name="resultCanvas" Background="LightYellow" Grid.RowSpan="2">
         </local:MarkCanvas>
-        <GroupBox Grid.Column="1" Header="设置" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="200"/>
-                    <RowDefinition Height= "*"/>
-                    <RowDefinition Height= "40"/>
-                </Grid.RowDefinitions>
+        <TabControl Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+            <TabItem Header="自动">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="200"/>
+                            <RowDefinition Height= "*"/>
+                            <RowDefinition Height= "40"/>
+                        </Grid.RowDefinitions>
 
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height= "40"/>
+                                <RowDefinition Height= "*"/>
+                                <RowDefinition Height= "40"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width= "0.5*"/>
+                                <ColumnDefinition Width= "0.5*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Content="数量：" VerticalAlignment="Center" />
+                            <TextBox Name="txtCnt" VerticalAlignment="Center" TextWrapping="Wrap" Text="5" Grid.Column="1"/>
+                            <Label Grid.Row="1" VerticalAlignment="Center" Content="筛选方法：">
+
+                            </Label>
+                            <RadioButton Name="rdbMaxArea" Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" Content="面积最大" IsChecked="True"/>
+                            <RadioButton Name="rdbRandom" Grid.Row="1" Grid.Column="2"  VerticalAlignment="Center" Content="随机"/>
+                            <Button Name="btnApply" Grid.ColumnSpan="3" Content="应用" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="btnApply_Click"  Grid.Row="3"/>
+                        </Grid>
+                        <Grid Grid.Row="1">
+                            <Label Content="提示：" HorizontalAlignment="Left" Margin="0,10,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+                            <TextBox Name="txtInfo" IsReadOnly="True" Margin="0,40,0,0" VerticalAlignment="Stretch" />
+                        </Grid>
+                    </Grid>
+            </TabItem>
+            <TabItem Header="手动">
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height= "40"/>
-                        <RowDefinition Height= "40"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="80"/>
-                        <ColumnDefinition Width= "0.5*"/>
-                        <ColumnDefinition Width= "0.5*"/>
-
-                    </Grid.ColumnDefinitions>
-
-                    <Label Content="数量：" VerticalAlignment="Center" />
-                    <TextBox Name="txtCnt" VerticalAlignment="Center" TextWrapping="Wrap" Text="5" Grid.Column="1"/>
-                    <Label Grid.Row="1" VerticalAlignment="Center">
-                        <TextBox Height="23" TextWrapping="Wrap" Text="TextBox" Width="120"/>
-                    </Label>
-                    <RadioButton Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" Content="面积最大" IsChecked="True"/>
-                    <RadioButton Grid.Row="1" Grid.Column="2"  VerticalAlignment="Center" Content="随机"/>
-
-                    <!--<local:RangeSlider x:Name="slider"
-                               Margin="10" 
-                               LowerValue="30"
-                               UpperValue="70"
-                               Minimum="0"
-                               Maximum="100"
-                               />
-                    <StackPanel Orientation="Horizontal">
-                        <Label>最小</Label>
-                        <TextBox HorizontalAlignment="Center" Text="{Binding ElementName=slider, Path=LowerValue, Mode=TwoWay, Converter={ StaticResource double2StringConverter}}" Margin="10,1,10,1" />
-                        <Label>最大</Label>
-                        <TextBox Text="{Binding ElementName=slider, Path=UpperValue, Mode=TwoWay, Converter={StaticResource double2StringConverter}}" Margin="10,1,10,1" />
-                    </StackPanel>-->
+                   <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height= "300"/>
+                   </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height= "*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.6*"/>
+                            <ColumnDefinition Width="0.4*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="克隆信息：" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Label Content="操作：" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <ListView Name="lvCloneInfos" Grid.Row="1">
+                            <ListView.Resources>
+                                <Style TargetType="{x:Type GridViewColumnHeader}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                </Style>
+                            </ListView.Resources>
+                            <ListView.View>
+                               
+                                <GridView>
+                                    <GridViewColumn Header="编号" Width="30" DisplayMemberBinding="{Binding Path=ID}"></GridViewColumn>
+                                    <GridViewColumn Header="位置" Width="200"  DisplayMemberBinding="{Binding Path=PositionString }"></GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                        <StackPanel Grid.Column="1" Grid.Row="1">
+                            <RadioButton Name="rdbView" IsChecked="True" Content="查看"/>
+                            <RadioButton Name="rdbAdd" Content="增加"/>
+                            <RadioButton Name="rdbDelete" Content="删除"/>
+                        </StackPanel>
+                    </Grid>
+                    
                 </Grid>
-                <Button Grid.Row="2" Name="btnApply" Content="应用" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="btnApply_Click"/>
-                <Grid Grid.Row="1">
-                    <Label Content="提示：" HorizontalAlignment="Left" Margin="0,10,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                    <TextBox IsReadOnly="True" Margin="0,40,0,0" VerticalAlignment="Stretch" />
-                </Grid>
+            </TabItem>
+            <ListBox Height="100" Width="100"/>
+        </TabControl>
 
-            </Grid>
-        </GroupBox>
     </Grid>
 </Window>

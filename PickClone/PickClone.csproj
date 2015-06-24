@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CloneInfo.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="MarkCanvas.cs" />
     <Compile Include="RangeSlider.xaml.cs" />

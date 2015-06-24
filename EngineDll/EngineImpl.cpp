@@ -165,6 +165,11 @@ string EngineImpl::MarkClones(ConstrainSettings^ constrains, std::vector<cv::Poi
 {
 	string resultFile = workingFolder + "\\clones.jpg";
 	auto contours =	MarkAllContours(img, constrains,resultFile);
+	sort(contours.begin(), contours.end(), [](const vector<cv::Point> & a, const vector<cv::Point> & b) -> bool
+	{
+		return a.size() > b.size();
+	});
+
 	for (auto contour : contours)
 	{
 		cv::Point pt = GetMassCenter(contour);

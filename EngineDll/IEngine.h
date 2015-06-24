@@ -10,11 +10,12 @@ namespace EngineDll
 		int x;
 		int y;
 		int ID = -1;
-
+		int size;
 		MPoint(int xx, int yy)
 		{
 			x = xx;
 			y = yy;
+			this->size = size;
 		}
 		MPoint(int xx, int yy, int id)
 		{
