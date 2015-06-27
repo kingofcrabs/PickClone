@@ -17,5 +17,7 @@ namespace PickClone
             bitmap.EndInit();
             return bitmap;
         }
+
+     
     }
 }

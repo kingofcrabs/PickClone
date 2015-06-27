@@ -1,6 +1,7 @@
 ﻿using EngineDll;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -23,7 +24,29 @@ namespace PickClone
 
         internal void LeftButtonUp(Point point, EditType editType)
         {
-            throw new NotImplementedException();
+            if(editType == EditType.view)
+            {
+                ViewThePoint(point);
+            }
+        }
+
+        private void ViewThePoint(Point point)
+        {
+            if (pts.Count == 0)
+                return;
+            Point ptInImage = Convert2BitmapCoord(point);
+            pts.ForEach(x => x.isCurrent = false);
+            var shortestDis = pts.Min(x => GetDistance(ptInImage, x));
+            var closest = pts.First(x => GetDistance(ptInImage,x) == shortestDis);
+            closest.isCurrent = true;
+            InvalidateVisual();
+        }
+
+        private double GetDistance(Point ptInImage, MPoint ptThis)
+        {
+            double disX = ptInImage.X - ptThis.x;
+            double disY = ptInImage.Y - ptThis.y;
+            return Math.Sqrt(disX * disX + disY * disY);
         }
 
         protected override void OnRender(System.Windows.Media.DrawingContext dc)
@@ -34,14 +57,15 @@ namespace PickClone
 
             foreach(var pt in pts)
             {
-                DrawRect(pt,false,dc);
+                DrawRect(pt,dc);
             }
         }
 
-        private void DrawRect(MPoint pt, bool isCurrent, System.Windows.Media.DrawingContext dc)
+        private void DrawRect(MPoint pt, System.Windows.Media.DrawingContext dc)
         {
             Point ptUI = Convert2UICoord(pt);
-            Brush brush = isCurrent ? Brushes.DarkGreen : Brushes.DarkBlue;
+            Brush brush = pt.isCurrent ? Brushes.Red : Brushes.DarkBlue;
+     
             dc.DrawRectangle(null, new System.Windows.Media.Pen(brush, 1), GetBoundingRect(ptUI));
              FormattedText text = new FormattedText(pt.ID.ToString(),
             CultureInfo.CurrentCulture,

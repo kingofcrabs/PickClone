@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EngineDll;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,11 @@ namespace PickClone
             {
                 return string.Format("{0}:{1}", position.X, position.Y);
             }
+        }
+
+        public static CloneInfo FromMPoint(MPoint pt)
+        {
+            return new CloneInfo(pt.ID, new Point(pt.x, pt.y));
         }
     }
 }

@@ -20,6 +20,7 @@ namespace PickClone
     /// </summary>
     public partial class MainWindow : Window
     {
+        List<CloneInfo> cloneInfos = new List<CloneInfo>();
         public MainWindow()
         {
             InitializeComponent();
@@ -60,8 +61,11 @@ namespace PickClone
             int cnt = 0;
             string markedImageFile = iEngine.MarkClones(new ConstrainSettings(10, 200),ref cnt, ref points);
             UpdateBackgroundImage(markedImageFile);
-            List<MPoint> pts = GetFirstNPts(points,cnt);
-            resultCanvas.SetMarkFlags(pts);
+            List<MPoint> firstNPts = GetFirstNPts(points,cnt);
+            cloneInfos.Clear();
+            firstNPts.ForEach(x=>cloneInfos.Add(CloneInfo.FromMPoint(x))); //convert all firstNPts to cloneInfos
+            lvCloneInfos.ItemsSource = cloneInfos;
+            resultCanvas.SetMarkFlags(firstNPts);
         }
 
         private bool CheckSettings()
