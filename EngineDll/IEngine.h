@@ -11,10 +11,12 @@ namespace EngineDll
 		int y;
 		int ID = -1;
 		int size;
+		bool isCurrent;
 		MPoint(int xx, int yy)
 		{
 			x = xx;
 			y = yy;
+			this->isCurrent = false;
 			this->size = size;
 		}
 		MPoint(int xx, int yy, int id)
@@ -22,6 +24,7 @@ namespace EngineDll
 			x = xx;
 			y = yy;
 			ID = id;
+			this->isCurrent = false;
 		}
 	};
 	public ref class IEngine
