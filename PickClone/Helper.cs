@@ -18,6 +18,6 @@ namespace PickClone
             return bitmap;
         }
 
-     
+        public static string ImagePath { get; set; }
     }
 }

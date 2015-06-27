@@ -19,7 +19,6 @@ namespace PickClone
         List<MPoint> pts = null;
         public MarkCanvas()
         {
-            //this.MouseLeftButtonUp += MarkCanvas_MouseLeftButtonUp;
         }
 
         internal void LeftButtonUp(Point point, EditType editType)
@@ -32,7 +31,7 @@ namespace PickClone
 
         private void ViewThePoint(Point point)
         {
-            if (pts.Count == 0)
+            if (pts == null || pts.Count == 0)
                 return;
             Point ptInImage = Convert2BitmapCoord(point);
             pts.ForEach(x => x.isCurrent = false);

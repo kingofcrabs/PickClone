@@ -88,7 +88,9 @@
                             <RadioButton Name="rdbDelete" Content="删除"/>
                         </StackPanel>
                     </Grid>
-                    
+                    <Grid Grid.Row="1">
+                        <Rectangle  Name="rectSubImage"/>
+                    </Grid>
                 </Grid>
             </TabItem>
             <ListBox Height="100" Width="100"/>
