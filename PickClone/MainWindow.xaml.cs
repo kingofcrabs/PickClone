@@ -1,6 +1,7 @@
 ﻿using EngineDll;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -20,13 +21,14 @@ namespace PickClone
     /// </summary>
     public partial class MainWindow : Window
     {
-        List<CloneInfo> cloneInfos = new List<CloneInfo>();
+        ObservableCollection<CloneInfo> cloneInfos = new ObservableCollection<CloneInfo>();
         public MainWindow()
         {
             InitializeComponent();
-            Helper.ImagePath = @"F:\temp\test.jpg";
+            ImageHelper.ImagePath = FolderHelper.GetLatestImage();
             this.MouseLeftButtonUp += MainWindow_MouseLeftButtonUp;
             this.Loaded += MainWindow_Loaded;
+            lvCloneInfos.ItemsSource = cloneInfos;
         }
 
         void MainWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -46,7 +48,7 @@ namespace PickClone
 
         private void UpdateSubImage(Point point)
         {
-            BitmapImage img = Helper.BitmapFromFile(Helper.ImagePath);
+            BitmapImage img = ImageHelper.BitmapFromFile(ImageHelper.ImagePath);
             var imageBrush = new ImageBrush( img);
             //imageBrush.Viewport = new Rect(0.1, 0.321, 0.7, 0.557);
             double xRatio = point.X / resultCanvas.ActualWidth;
@@ -70,7 +72,7 @@ namespace PickClone
 
             #endregion
             IEngine iEngine = new IEngine();
-            iEngine.Load(Helper.ImagePath);
+            iEngine.Load(ImageHelper.ImagePath);
             MPoint[] points = new MPoint[100];
             int cnt = 0;
             string markedImageFile = iEngine.MarkClones(new ConstrainSettings(10, 200),ref cnt, ref points);
@@ -78,7 +80,7 @@ namespace PickClone
             List<MPoint> firstNPts = GetFirstNPts(points,cnt);
             cloneInfos.Clear();
             firstNPts.ForEach(x=>cloneInfos.Add(CloneInfo.FromMPoint(x))); //convert all firstNPts to cloneInfos
-            lvCloneInfos.ItemsSource = cloneInfos;
+            
             resultCanvas.SetMarkFlags(firstNPts);
         }
 
@@ -116,7 +118,7 @@ namespace PickClone
 
         private void UpdateBackgroundImage()
         {
-            var imgSource = Helper.BitmapFromFile(Helper.ImagePath);
+            var imgSource = ImageHelper.BitmapFromFile(ImageHelper.ImagePath);
             ImageBrush imgBrush = new ImageBrush();
             imgBrush.ImageSource = imgSource;
             resultCanvas.Background = imgBrush;

@@ -100,7 +100,9 @@ vector<vector<cv::Point>> EngineImpl::MarkAllContours(Mat& src,ConstrainSettings
 	cvtColor(tmp, gray, CV_BGR2GRAY);
 	//adaptiveThreshold(gray, gray, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY_INV, 11, 5);
 	threshold(gray, gray, 200, 255, 0);
+#if _DEBUG
 	imwrite("f:\\temp\\sub\\adaptive.jpg", gray);
+#endif
 	FindContours(gray, contours, minPts, maxPts);
 	for (int i = 0; i< contours.size(); i++)
 	{
@@ -129,6 +131,8 @@ cv::Point EngineImpl::GetMassCenter(vector<cv::Point>& pts)
 	return cv::Point(totalX / size, totalY / size); // condition: size != 0
 }
 
+
+//first convert the image into HSV format,call inRange to filter the color
 vector<vector<cv::Point>> EngineImpl::MarkAllContoursGray(Mat& src, Mat& org)
 {
 	Mat gray = src.clone();
@@ -140,7 +144,9 @@ vector<vector<cv::Point>> EngineImpl::MarkAllContoursGray(Mat& src, Mat& org)
 
 	//adaptiveThreshold(gray, gray, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY_INV, 11, 5);
 	threshold(gray, gray, 200, 255, 0);
+#if _DEBUG
 	imwrite("f:\\temp\\sub\\adaptiveYellow.jpg", gray);
+#endif
 	FindContours(gray, contours, minPts, maxPts);
 	for (int i = 0; i< contours.size(); i++)
 	{
