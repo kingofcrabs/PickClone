@@ -100,6 +100,13 @@ namespace PickClone
 
         public System.Windows.Size ImageSize { get; set; }
 
-      
+
+
+        internal Point Convert2UICoord(string sPosition)
+        {
+            string[] strs = sPosition.Split(':');
+            MPoint tmpMPoint = new MPoint(int.Parse(strs[0]), int.Parse(strs[1]));
+            return Convert2UICoord(tmpMPoint);
+        }
     }
 }

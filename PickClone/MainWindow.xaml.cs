@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -29,21 +30,43 @@ namespace PickClone
             this.MouseLeftButtonUp += MainWindow_MouseLeftButtonUp;
             this.Loaded += MainWindow_Loaded;
             lvCloneInfos.ItemsSource = cloneInfos;
+            lvCloneInfos.SelectionChanged += lvCloneInfos_SelectionChanged;
+        }
+
+        void lvCloneInfos_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Debug.WriteLine(lvCloneInfos.SelectedItem.ToString());
+            e.Handled = true;
+            if (lvCloneInfos == null || lvCloneInfos.Items.Count == 0)
+                return;
+            if (lvCloneInfos.SelectedItem == null)
+                return;
+            var cloneInfo = (CloneInfo)lvCloneInfos.SelectedItem;
+            Point ptInUICoord = resultCanvas.Convert2UICoord(cloneInfo.PositionString);
+            OnMouseLeftButtonDown(ptInUICoord);
+            
+        }
+
+        private void OnMouseLeftButtonDown(Point ptInUICoord)
+        {
+            EditType editType = EditType.view;
+            if ((bool)rdbAdd.IsChecked)
+            {
+                editType = EditType.add;
+            }
+            else if ((bool)rdbDelete.IsChecked)
+            {
+                editType = EditType.delete;
+            }
+            UpdateSubImage(ptInUICoord);
+            resultCanvas.LeftButtonUp(ptInUICoord, editType);
         }
 
         void MainWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            EditType editType = EditType.view;
-            if((bool)rdbAdd.IsChecked)
-            {
-                editType = EditType.add;
-            }
-            else if((bool)rdbDelete.IsChecked)
-            {
-                editType = EditType.delete;
-            }
-            UpdateSubImage(e.GetPosition(this.resultCanvas));
-            resultCanvas.LeftButtonUp(e.GetPosition(this.resultCanvas), editType);
+            if (lvCloneInfos.IsMouseOver)
+                return;
+            OnMouseLeftButtonDown(e.GetPosition(this.resultCanvas));
         }
 
         private void UpdateSubImage(Point point)

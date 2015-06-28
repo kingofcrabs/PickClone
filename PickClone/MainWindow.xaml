@@ -93,7 +93,6 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <ListBox Height="100" Width="100"/>
         </TabControl>
 
     </Grid>
