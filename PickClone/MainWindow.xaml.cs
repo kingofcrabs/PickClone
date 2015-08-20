@@ -1,8 +1,6 @@
 ﻿using EngineDll;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -22,57 +20,33 @@ namespace PickClone
     /// </summary>
     public partial class MainWindow : Window
     {
-        ObservableCollection<CloneInfo> cloneInfos = new ObservableCollection<CloneInfo>();
+        List<CloneInfo> cloneInfos = new List<CloneInfo>();
         public MainWindow()
         {
             InitializeComponent();
-            ImageHelper.ImagePath = FolderHelper.GetLatestImage();
             this.MouseLeftButtonUp += MainWindow_MouseLeftButtonUp;
             this.Loaded += MainWindow_Loaded;
-            lvCloneInfos.ItemsSource = cloneInfos;
-            lvCloneInfos.SelectionChanged += lvCloneInfos_SelectionChanged;
-        }
-
-        void lvCloneInfos_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Debug.WriteLine(lvCloneInfos.SelectedItem.ToString());
-            e.Handled = true;
-            if (lvCloneInfos == null || lvCloneInfos.Items.Count == 0)
-                return;
-            if (lvCloneInfos.SelectedItem == null)
-                return;
-            var cloneInfo = (CloneInfo)lvCloneInfos.SelectedItem;
-            Point ptInUICoord = resultCanvas.Convert2UICoord(cloneInfo.PositionString);
-            OnMouseLeftButtonDown(ptInUICoord);
-            
-        }
-
-        private void OnMouseLeftButtonDown(Point ptInUICoord)
-        {
-            EditType editType = EditType.view;
-            if ((bool)rdbAdd.IsChecked)
-            {
-                editType = EditType.add;
-            }
-            else if ((bool)rdbDelete.IsChecked)
-            {
-                editType = EditType.delete;
-            }
-            UpdateSubImage(ptInUICoord);
-            resultCanvas.LeftButtonUp(ptInUICoord, editType);
         }
 
         void MainWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (lvCloneInfos.IsMouseOver)
-                return;
-            OnMouseLeftButtonDown(e.GetPosition(this.resultCanvas));
+            EditType editType = EditType.view;
+            if((bool)rdbAdd.IsChecked)
+            {
+                editType = EditType.add;
+            }
+            else if((bool)rdbDelete.IsChecked)
+            {
+                editType = EditType.delete;
+            }
+            UpdateSubImage(e.GetPosition(this.resultCanvas));
+            resultCanvas.LeftButtonUp(e.GetPosition(this.resultCanvas), editType);
         }
 
         private void UpdateSubImage(Point point)
         {
-            BitmapImage img = ImageHelper.BitmapFromFile(ImageHelper.ImagePath);
-            var imageBrush = new ImageBrush( img);
+            BitmapImage img = Helper.BitmapFromFile(@"F:\temp\test.jpg");
+            var imageBrush = new ImageBrush(img);
             //imageBrush.Viewport = new Rect(0.1, 0.321, 0.7, 0.557);
             double xRatio = point.X / resultCanvas.ActualWidth;
             double yRatio = point.Y / resultCanvas.ActualWidth;
@@ -81,9 +55,10 @@ namespace PickClone
             rectSubImage.Fill = imageBrush;
         }
 
+
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            UpdateBackgroundImage();
+            UpdateBackgroundImage(@"F:\temp\test.jpg");
         }
 
         private void btnApply_Click(object sender, RoutedEventArgs e)
@@ -95,16 +70,25 @@ namespace PickClone
 
             #endregion
             IEngine iEngine = new IEngine();
-            iEngine.Load(ImageHelper.ImagePath);
-            MPoint[] points = new MPoint[100];
+            iEngine.Load(@"F:\temp\test.jpg");
+            MPoint[] points = new MPoint[200];
             int cnt = 0;
             string markedImageFile = iEngine.MarkClones(new ConstrainSettings(10, 200),ref cnt, ref points);
-            UpdateBackgroundImage();
-            List<MPoint> firstNPts = GetFirstNPts(points,cnt);
+            UpdateBackgroundImage(markedImageFile);
+            SetInfo(string.Format("找到{0}个克隆。", cnt),false);
+            List<MPoint> pts = GetFirstNPts(points,cnt);
+            UpdateCloneInfos(pts);
+            resultCanvas.SetMarkFlags(pts);
+        }
+
+        private void UpdateCloneInfos(List<MPoint> pts)
+        {
             cloneInfos.Clear();
-            firstNPts.ForEach(x=>cloneInfos.Add(CloneInfo.FromMPoint(x))); //convert all firstNPts to cloneInfos
-            
-            resultCanvas.SetMarkFlags(firstNPts);
+            for(int i = 0; i < pts.Count; i++)
+            {
+                cloneInfos.Add(new CloneInfo(i+1,new Point(pts[i].x,pts[i].y)));
+            }
+            lvCloneInfos.ItemsSource = cloneInfos;
         }
 
         private bool CheckSettings()
@@ -139,9 +123,9 @@ namespace PickClone
             return pts;
         }
 
-        private void UpdateBackgroundImage()
+        private void UpdateBackgroundImage(string resFile)
         {
-            var imgSource = ImageHelper.BitmapFromFile(ImageHelper.ImagePath);
+            var imgSource = Helper.BitmapFromFile(resFile);
             ImageBrush imgBrush = new ImageBrush();
             imgBrush.ImageSource = imgSource;
             resultCanvas.Background = imgBrush;

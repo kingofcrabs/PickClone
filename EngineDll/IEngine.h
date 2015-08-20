@@ -7,24 +7,24 @@ namespace EngineDll
 	public ref class MPoint
 	{
 	public:
+		bool isCurrent;
 		int x;
 		int y;
 		int ID = -1;
 		int size;
-		bool isCurrent;
 		MPoint(int xx, int yy)
 		{
 			x = xx;
 			y = yy;
-			this->isCurrent = false;
 			this->size = size;
+			isCurrent = false;
 		}
 		MPoint(int xx, int yy, int id)
 		{
 			x = xx;
 			y = yy;
 			ID = id;
-			this->isCurrent = false;
+			isCurrent = false;
 		}
 	};
 	public ref class IEngine

@@ -14,7 +14,7 @@
         <local:MarkCanvas x:Name="resultCanvas" Background="LightYellow" Grid.RowSpan="2">
         </local:MarkCanvas>
         <TabControl Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
-            <TabItem Header="自动">
+            <TabItem Header="设置">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="200"/>
@@ -50,7 +50,7 @@
                         </Grid>
                     </Grid>
             </TabItem>
-            <TabItem Header="手动">
+            <TabItem Header="结果">
                 <Grid>
                    <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
@@ -89,10 +89,11 @@
                         </StackPanel>
                     </Grid>
                     <Grid Grid.Row="1">
-                        <Rectangle  Name="rectSubImage"/>
+                        <Rectangle Name="rectSubImage"/>
                     </Grid>
                 </Grid>
             </TabItem>
+            <ListBox Height="100" Width="100"/>
         </TabControl>
 
     </Grid>

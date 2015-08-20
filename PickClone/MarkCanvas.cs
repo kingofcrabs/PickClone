@@ -1,7 +1,6 @@
 ﻿using EngineDll;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -19,33 +18,51 @@ namespace PickClone
         List<MPoint> pts = null;
         public MarkCanvas()
         {
+            //this.MouseLeftButtonUp += MarkCanvas_MouseLeftButtonUp;
         }
 
         internal void LeftButtonUp(Point point, EditType editType)
         {
-            if(editType == EditType.view)
+            switch(editType)
             {
-                ViewThePoint(point);
+                case EditType.view:
+                    ViewClone(point);
+                    break;
+                default:
+                    break;
             }
+            this.InvalidateVisual();
         }
 
-        private void ViewThePoint(Point point)
+        private void ViewClone(Point point)
         {
-            if (pts == null || pts.Count == 0)
+            if(pts == null || pts.Count == 0 )
                 return;
+            
+            for(int i = 0; i< pts.Count; i++)
+            {
+                pts[i].isCurrent = false;
+            }
             Point ptInImage = Convert2BitmapCoord(point);
-            pts.ForEach(x => x.isCurrent = false);
-            var shortestDis = pts.Min(x => GetDistance(ptInImage, x));
-            var closest = pts.First(x => GetDistance(ptInImage,x) == shortestDis);
-            closest.isCurrent = true;
-            InvalidateVisual();
+            double minDistance = 10000;
+            int minIndex = 0;
+            for(int i = 0; i< pts.Count; i++)
+            {
+                double tmpDistance = GetDistance(ptInImage, pts[i]);
+                if(tmpDistance < minDistance)
+                {
+                    minDistance = tmpDistance;
+                    minIndex = i;
+                }
+            }
+            pts[minIndex].isCurrent = true;
         }
 
-        private double GetDistance(Point ptInImage, MPoint ptThis)
+        private double GetDistance(Point ptInImage, MPoint mPoint)
         {
-            double disX = ptInImage.X - ptThis.x;
-            double disY = ptInImage.Y - ptThis.y;
-            return Math.Sqrt(disX * disX + disY * disY);
+            int xDis = (int)(ptInImage.X - mPoint.x);
+            int yDis = (int)(ptInImage.Y - mPoint.y);
+            return Math.Sqrt(xDis * xDis + yDis * yDis);
         }
 
         protected override void OnRender(System.Windows.Media.DrawingContext dc)
@@ -56,15 +73,14 @@ namespace PickClone
 
             foreach(var pt in pts)
             {
-                DrawRect(pt,dc);
+                DrawRect(pt,false,dc);
             }
         }
 
-        private void DrawRect(MPoint pt, System.Windows.Media.DrawingContext dc)
+        private void DrawRect(MPoint pt, bool isCurrent, System.Windows.Media.DrawingContext dc)
         {
             Point ptUI = Convert2UICoord(pt);
             Brush brush = pt.isCurrent ? Brushes.Red : Brushes.DarkBlue;
-     
             dc.DrawRectangle(null, new System.Windows.Media.Pen(brush, 1), GetBoundingRect(ptUI));
              FormattedText text = new FormattedText(pt.ID.ToString(),
             CultureInfo.CurrentCulture,
@@ -100,13 +116,6 @@ namespace PickClone
 
         public System.Windows.Size ImageSize { get; set; }
 
-
-
-        internal Point Convert2UICoord(string sPosition)
-        {
-            string[] strs = sPosition.Split(':');
-            MPoint tmpMPoint = new MPoint(int.Parse(strs[0]), int.Parse(strs[1]));
-            return Convert2UICoord(tmpMPoint);
-        }
+      
     }
 }
