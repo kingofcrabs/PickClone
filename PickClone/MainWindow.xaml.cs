@@ -45,7 +45,7 @@ namespace PickClone
 
         private void UpdateSubImage(Point point)
         {
-            BitmapImage img = Helper.BitmapFromFile(@"F:\temp\test.jpg");
+            BitmapImage img = ImageHelper.BitmapFromFile(@"F:\temp\test.jpg");
             var imageBrush = new ImageBrush(img);
             //imageBrush.Viewport = new Rect(0.1, 0.321, 0.7, 0.557);
             double xRatio = point.X / resultCanvas.ActualWidth;
@@ -125,7 +125,7 @@ namespace PickClone
 
         private void UpdateBackgroundImage(string resFile)
         {
-            var imgSource = Helper.BitmapFromFile(resFile);
+            var imgSource = ImageHelper.BitmapFromFile(resFile);
             ImageBrush imgBrush = new ImageBrush();
             imgBrush.ImageSource = imgSource;
             resultCanvas.Background = imgBrush;

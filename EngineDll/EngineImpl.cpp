@@ -167,6 +167,11 @@ void EngineImpl::Load(string sFile)
 	GetCircleROI(img);
 }
 
+void EngineImpl::FindRefPositions(int& top, int& left, int& bottom, int& right)
+{
+
+}
+
 string EngineImpl::MarkClones(ConstrainSettings^ constrains, std::vector<cv::Point>& centers)
 {
 	string resultFile = workingFolder + "\\clones.jpg";

@@ -20,6 +20,7 @@ public:
 	void Load(std::string sFile);
 	EngineImpl();
 	std::string MarkClones(ConstrainSettings^ constrains, std::vector<cv::Point>& centers);
+	void FindCalibPositions(int& top, int& left, int& bottom, int& right);
 private:
 	cv::Point GetMassCenter(std::vector<cv::Point>& pts);
 	void GetCircleROI(cv::Mat& src);
