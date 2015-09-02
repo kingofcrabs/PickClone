@@ -1,6 +1,8 @@
 ﻿using EngineDll;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -21,31 +23,37 @@ namespace PickClone
     public partial class MainWindow : Window
     {
         List<CloneInfo> cloneInfos = new List<CloneInfo>();
+        string imageName = "";
         public MainWindow()
         {
             InitializeComponent();
             this.MouseLeftButtonUp += MainWindow_MouseLeftButtonUp;
+            imageName = GetLatestImage();
             this.Loaded += MainWindow_Loaded;
+        }
+
+        private string GetLatestImage()
+        {
+            string dir = ConfigurationManager.AppSettings["imageFolder"];
+            var files = Directory.EnumerateFiles(dir, "*.jpg");
+            List<FileInfo> fileInfos = new List<FileInfo>();
+            foreach(var file in files)
+            {
+                fileInfos.Add(new FileInfo(file)); 
+            }
+            var latest = fileInfos.OrderBy(x => x.CreationTime).Last();
+            return latest.FullName;
         }
 
         void MainWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            EditType editType = EditType.view;
-            if((bool)rdbAdd.IsChecked)
-            {
-                editType = EditType.add;
-            }
-            else if((bool)rdbDelete.IsChecked)
-            {
-                editType = EditType.delete;
-            }
             UpdateSubImage(e.GetPosition(this.resultCanvas));
-            resultCanvas.LeftButtonUp(e.GetPosition(this.resultCanvas), editType);
+            resultCanvas.LeftButtonUp(e.GetPosition(this.resultCanvas));
         }
 
         private void UpdateSubImage(Point point)
         {
-            BitmapImage img = ImageHelper.BitmapFromFile(@"F:\temp\test.jpg");
+            BitmapImage img = ImageHelper.BitmapFromFile(imageName);
             var imageBrush = new ImageBrush(img);
             //imageBrush.Viewport = new Rect(0.1, 0.321, 0.7, 0.557);
             double xRatio = point.X / resultCanvas.ActualWidth;
@@ -58,7 +66,7 @@ namespace PickClone
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            UpdateBackgroundImage(@"F:\temp\test.jpg");
+            UpdateBackgroundImage(imageName);
         }
 
         private void btnApply_Click(object sender, RoutedEventArgs e)
@@ -67,18 +75,28 @@ namespace PickClone
             bool bok = CheckSettings();
             if (!bok)
                 return;
-
+            CreateOutputFolder();
+          
             #endregion
             IEngine iEngine = new IEngine();
-            iEngine.Load(@"F:\temp\test.jpg");
+            iEngine.Load(imageName);
             MPoint[] points = new MPoint[200];
             int cnt = 0;
-            string markedImageFile = iEngine.MarkClones(new ConstrainSettings(10, 200),ref cnt, ref points);
+            RefPositions refPositions = new RefPositions();
+            string markedImageFile = iEngine.MarkClones(new ConstrainSettings(10, 200),refPositions,ref cnt, ref points);
             UpdateBackgroundImage(markedImageFile);
             SetInfo(string.Format("找到{0}个克隆。", cnt),false);
             List<MPoint> pts = GetFirstNPts(points,cnt);
             UpdateCloneInfos(pts);
             resultCanvas.SetMarkFlags(pts);
+        }
+
+        private void CreateOutputFolder()
+        {
+            string dir = ConfigurationManager.AppSettings["imageFolder"];
+            string sOutputFolder = dir + "\\output\\";
+            if (!Directory.Exists(sOutputFolder))
+                Directory.CreateDirectory(sOutputFolder);
         }
 
         private void UpdateCloneInfos(List<MPoint> pts)
@@ -131,5 +149,19 @@ namespace PickClone
             resultCanvas.Background = imgBrush;
             resultCanvas.ImageSize = new Size(imgSource.Width, imgSource.Height);
         }
+
+        #region commands
+        private void CommandHelp_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            HelpForm helpForm = new HelpForm();
+            helpForm.ShowDialog();
+        }
+
+        private void CommandHelp_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+        #endregion
+
     }
 }

@@ -59,9 +59,18 @@
     <Compile Include="Calibration.cs" />
     <Compile Include="CloneInfo.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="HelpForm.xaml.cs">
+      <DependentUpon>HelpForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MarkCanvas.cs" />
     <Compile Include="RangeSlider.xaml.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="StringWriterWithEncoding.cs" />
     <Compile Include="Worklist.cs" />
+    <Page Include="HelpForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -83,19 +92,19 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Include="Properties\strings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+      <DependentUpon>strings.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Include="Properties\strings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <LastGenOutput>strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Properties\Settings.settings">

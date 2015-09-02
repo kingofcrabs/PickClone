@@ -21,16 +21,9 @@ namespace PickClone
             //this.MouseLeftButtonUp += MarkCanvas_MouseLeftButtonUp;
         }
 
-        internal void LeftButtonUp(Point point, EditType editType)
+        internal void LeftButtonUp(Point point)
         {
-            switch(editType)
-            {
-                case EditType.view:
-                    ViewClone(point);
-                    break;
-                default:
-                    break;
-            }
+            ViewClone(point);
             this.InvalidateVisual();
         }
 

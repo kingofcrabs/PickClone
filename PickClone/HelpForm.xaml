@@ -1,0 +1,16 @@
+﻿<Window x:Class="PickClone.HelpForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStartupLocation ="CenterScreen"
+        Title="关于" Height="145" Width="404">
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="Label">
+                <Setter Property="FontFamily" Value="SimSum" />
+                <Setter Property="FontSize" Value="12" />
+            </Style>
+        </Grid.Resources>
+        <Label  Content="© 2014-2015 盈开生物，保留所有权利" Height="32" HorizontalAlignment="Left" Margin="21,62,0,0" Name="label1" VerticalAlignment="Top" Width="327" />
+        <Label  Content="" Height="29" HorizontalAlignment="Left" Margin="21,27,0,0" Name="lblDescription" VerticalAlignment="Top" Width="349" />
+    </Grid>
+</Window>

@@ -23,6 +23,14 @@ namespace EngineDll
 
 	System::String^ IEngine::MarkClones(ConstrainSettings^ ConstrainSettings, RefPositions^ refPositions, int% actualCnt, array<MPoint^>^ %features)
 	{
+
+		int top, left, right, bottom;
+		m_EngineImpl->FindRefPositions(top, left, bottom, right);
+		refPositions->left = left;
+		refPositions->top = top;
+		refPositions->bottom = bottom;
+		refPositions->right = right;
+
 		//System::String^ MyString = gcnew System::String(Model.c_str());
 		std::vector<cv::Point> pts;
 		std::string resFile = m_EngineImpl->MarkClones(ConstrainSettings, pts);
@@ -36,12 +44,7 @@ namespace EngineDll
 				break;
 			features[i++] = sysPoint;
 		}
-		int top, left, right, bottom;
-		m_EngineImpl->FindRefPositions(top, left, bottom, right);
-		refPositions->left = left;
-		refPositions->top = top;
-		refPositions->bottom = bottom;
-		refPositions->right = right;
+
 		return gcnew System::String(resFile.c_str());
 	}
 

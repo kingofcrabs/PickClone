@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Media.Imaging;
+
 
 namespace PickClone
 {
@@ -22,6 +24,11 @@ namespace PickClone
         public static string ImagePath { get; set; }
     }
 
+
+    partial class SerialHelper
+    {
+        
+    }
 
     public class FolderHelper
     {
