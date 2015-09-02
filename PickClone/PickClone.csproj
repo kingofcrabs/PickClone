@@ -65,7 +65,6 @@
     <Compile Include="MarkCanvas.cs" />
     <Compile Include="RangeSlider.xaml.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="StringWriterWithEncoding.cs" />
     <Compile Include="Worklist.cs" />
     <Page Include="HelpForm.xaml">
       <SubType>Designer</SubType>
