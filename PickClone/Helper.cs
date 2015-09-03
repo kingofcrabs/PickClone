@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -47,12 +48,35 @@ namespace PickClone
 
         static public string GetConfigFolder()
         {
-            return GetExeParentFolder() + "Config\\";
+            string sConfigFolder = GetExeParentFolder() + "Config\\";
+            CreateIfNotExist(sConfigFolder);
+            return sConfigFolder;
         }
 
         static public string GetDataFolder()
         {
-            return GetExeParentFolder() + "Data\\";
+            string sDataFolder = GetExeParentFolder() + "Data\\";
+            CreateIfNotExist(sDataFolder);
+            return sDataFolder;
+        }
+
+        //static public string GetLatestImage()
+        //{
+        //    string dir = ConfigurationManager.AppSettings["imageFolder"];
+        //    var files = Directory.EnumerateFiles(dir, "*.jpg");
+        //    List<FileInfo> fileInfos = new List<FileInfo>();
+        //    foreach (var file in files)
+        //    {
+        //        fileInfos.Add(new FileInfo(file));
+        //    }
+        //    var latest = fileInfos.OrderBy(x => x.CreationTime).Last();
+        //    return latest.FullName;
+        //}
+
+        private static void CreateIfNotExist(string sFolder)
+        {
+            if (!Directory.Exists(sFolder))
+                Directory.CreateDirectory(sFolder);
         }
 
         static public string GetLatestImage()

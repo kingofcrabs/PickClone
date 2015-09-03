@@ -64,6 +64,14 @@ void EngineImpl::RemovePtsNotInROI(Mat& src, CvPoint ptMass)
 	return;
 }
 
+bool CompareX(Point x,Point y) { return x.x<y.x; }
+
+int EngineImpl::GetWidth(vector<Point> pts)
+{
+	int right = max_element(pts.begin(), pts.end(), CompareX)->x;
+	int left = min_element(pts.begin(), pts.end(), CompareX)->x;
+	return right - left;
+}
 
 void EngineImpl::GetCircleROI(Mat& src)
 {
@@ -71,7 +79,7 @@ void EngineImpl::GetCircleROI(Mat& src)
 	cvtColor(src, gray, CV_BGR2GRAY);
 	threshold(gray, gray, 200, 255, 0);
 #if _DEBUG
-	imwrite("f:\\temp\\sub\\gray.jpg", gray);
+	imwrite("f:\\temp\\output\\gray.jpg", gray);
 #endif
 	vector<vector<cv::Point>> contours;
 	int minPts = 2000;
@@ -80,9 +88,26 @@ void EngineImpl::GetCircleROI(Mat& src)
 	{
 		return;
 	}
-	edgeContour = contours[0];
-#if _DEBUG
-	imwrite("f:\\temp\\sub\\circleROI.jpg", src);
+	int max = 0;
+	int index = 0;
+	for (int i = 0; i< contours.size(); i++)
+	{
+		int width = GetWidth(contours[i]);
+		if (width > max)
+		{
+			max = width;
+			index = i;
+		}
+	}
+	edgeContour = contours[index];
+#if _DEBUG	
+	Mat tmp = src.clone();
+
+	//for (int i = 0; i< contours.size(); i++)
+	{
+		drawContours(tmp, contours, index, Scalar(0, 255, 0), 2);
+	}
+	imwrite("f:\\temp\\output\\circleROI.jpg", tmp);
 #endif
 }
 
@@ -177,7 +202,7 @@ vector<vector<cv::Point>> EngineImpl::MarkAllContoursGray(Mat& src, Mat& org)
 
 void EngineImpl::Load(string sFile)
 {
-	int index = sFile.rfind("\\");
+	int index = sFile.rfind("\\Data");
 	workingFolder = sFile.substr(0, index);
 	img = imread(sFile);
 	GetCircleROI(img);

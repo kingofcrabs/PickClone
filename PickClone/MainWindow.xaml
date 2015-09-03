@@ -37,7 +37,8 @@
                                 <RowDefinition Height= "40"/>
                                 <RowDefinition Height= "*"/>
                                 <RowDefinition Height= "40"/>
-                            </Grid.RowDefinitions>
+                                <RowDefinition Height= "40"/>
+                        </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="80"/>
                                 <ColumnDefinition Width= "0.5*"/>
@@ -52,10 +53,11 @@
                             <RadioButton Name="rdbMaxArea" Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" Content="面积最大" IsChecked="True"/>
                             <RadioButton Name="rdbRandom" Grid.Row="1" Grid.Column="2"  VerticalAlignment="Center" Content="随机"/>
                             <Button Name="btnApply" Grid.ColumnSpan="3" Content="应用" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="btnApply_Click"  Grid.Row="3"/>
-                        </Grid>
+                            <Button Name="btnSave" Grid.ColumnSpan="3" Content="保存" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="btnSave_Click"  Grid.Row="4"/>
+                    </Grid>
                         <Grid Grid.Row="1">
                             <Label Content="提示：" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
-                            <TextBox Name="txtInfo" IsReadOnly="True" Margin="0,30,0,0" VerticalAlignment="Stretch" />
+                            <TextBox Name="txtInfo" IsReadOnly="True" Margin="0,30,0,0" VerticalAlignment="Stretch" TextWrapping="Wrap" />
                         </Grid>
                     </Grid>
             </TabItem>

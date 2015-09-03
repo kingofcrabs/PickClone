@@ -24,26 +24,31 @@ namespace PickClone
     {
         List<CloneInfo> cloneInfos = new List<CloneInfo>();
         string imageName = "";
+        bool bSilent = false;
         public MainWindow()
         {
             InitializeComponent();
             this.MouseLeftButtonUp += MainWindow_MouseLeftButtonUp;
-            imageName = GetLatestImage();
+            //imageName = FolderHelper.GetLatestImage();
             this.Loaded += MainWindow_Loaded;
         }
 
-        private string GetLatestImage()
+        public MainWindow(string[] p)
+            :this()
         {
-            string dir = ConfigurationManager.AppSettings["imageFolder"];
-            var files = Directory.EnumerateFiles(dir, "*.jpg");
-            List<FileInfo> fileInfos = new List<FileInfo>();
-            foreach(var file in files)
+            // TODO: Complete member initialization
+            if(p.Length >0)
             {
-                fileInfos.Add(new FileInfo(file)); 
+                bSilent = true;
             }
-            var latest = fileInfos.OrderBy(x => x.CreationTime).Last();
-            return latest.FullName;
         }
+
+
+        void CapturePicture()
+        {
+
+        }
+    
 
         void MainWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -150,6 +155,21 @@ namespace PickClone
             resultCanvas.ImageSize = new Size(imgSource.Width, imgSource.Height);
         }
 
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            bool bok = CheckSettings();
+            if (!bok)
+                return;
+
+            Settings settings = new Settings();
+            settings.cloneCnt = int.Parse(txtCnt.Text);
+            settings.selectionMethod = (bool)rdbMaxArea.IsChecked ? SelectionMethod.biggest : SelectionMethod.random;
+            string sFile = FolderHelper.GetConfigFolder() + "settings.xml"; 
+            settings.Save(sFile);
+
+            SetInfo(string.Format("配置文件已被保存到：{0}",sFile),false);
+        }
+
         #region commands
         private void CommandHelp_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -162,6 +182,8 @@ namespace PickClone
             e.CanExecute = true;
         }
         #endregion
+
+      
 
     }
 }

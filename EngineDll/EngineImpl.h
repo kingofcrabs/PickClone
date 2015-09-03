@@ -25,6 +25,7 @@ public:
 private:
 	cv::Point GetMassCenter(std::vector<cv::Point>& pts);
 	void GetCircleROI(cv::Mat& src);
+	int GetWidth(std::vector<cv::Point> pts);
 	void RemovePtsNotInROI(cv::Mat& src, CvPoint ptMass);
 	
 	void  FindContours(const cv::Mat& thresholdImg,	std::vector<std::vector<cv::Point>>& contours,int min, int max = 999999);

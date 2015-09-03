@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 namespace PickClone
 {
     [Serializable]
-    class Settings
+    public class Settings
     {
         public int cloneCnt;
         public SelectionMethod selectionMethod;
@@ -18,8 +18,12 @@ namespace PickClone
             cloneCnt = 50;
             selectionMethod = SelectionMethod.biggest;
         }
+        public void Save(string sFile)
+        {
+            Save(this, sFile);
+        }
 
-        public static void Save<T>(T settings, string sFile)
+        private static void Save<T>(T settings, string sFile)
         {
             XmlSerializer xs = new XmlSerializer(typeof(T));
             Stream stream = new FileStream(sFile, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
@@ -52,7 +56,7 @@ namespace PickClone
         }
     }
 
-    enum SelectionMethod
+    public enum SelectionMethod
     {
         biggest = 0,
         random =  1
