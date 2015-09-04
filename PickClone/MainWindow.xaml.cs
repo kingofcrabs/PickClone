@@ -28,147 +28,147 @@ namespace PickClone
         public MainWindow()
         {
             InitializeComponent();
-            this.MouseLeftButtonUp += MainWindow_MouseLeftButtonUp;
+            //this.MouseLeftButtonUp += MainWindow_MouseLeftButtonUp;
             //imageName = FolderHelper.GetLatestImage();
-            this.Loaded += MainWindow_Loaded;
+            //this.Loaded += MainWindow_Loaded;
         }
 
-        public MainWindow(string[] p)
-            :this()
-        {
-            // TODO: Complete member initialization
-            if(p.Length >0)
-            {
-                bSilent = true;
-            }
-        }
+        //public MainWindow(string[] p)
+        //    :this()
+        //{
+        //    // TODO: Complete member initialization
+        //    if(p.Length >0)
+        //    {
+        //        bSilent = true;
+        //    }
+        //}
 
 
-        void CapturePicture()
-        {
+        //void CapturePicture()
+        //{
 
-        }
+        //}
     
 
-        void MainWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            UpdateSubImage(e.GetPosition(this.resultCanvas));
-            resultCanvas.LeftButtonUp(e.GetPosition(this.resultCanvas));
-        }
+        //void MainWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    UpdateSubImage(e.GetPosition(this.resultCanvas));
+        //    resultCanvas.LeftButtonUp(e.GetPosition(this.resultCanvas));
+        //}
 
-        private void UpdateSubImage(Point point)
-        {
-            BitmapImage img = ImageHelper.BitmapFromFile(imageName);
-            var imageBrush = new ImageBrush(img);
-            //imageBrush.Viewport = new Rect(0.1, 0.321, 0.7, 0.557);
-            double xRatio = point.X / resultCanvas.ActualWidth;
-            double yRatio = point.Y / resultCanvas.ActualWidth;
-            //imageBrush.Viewport = new Rect(new Point(xRatio - 0.05, yRatio - 0.05), new Size(0.1, 0.1));
-            imageBrush.Viewbox = new Rect(new Point(xRatio - 0.05, yRatio - 0.05), new Size(0.1, 0.1));
-            rectSubImage.Fill = imageBrush;
-        }
+        //private void UpdateSubImage(Point point)
+        //{
+        //    BitmapImage img = ImageHelper.BitmapFromFile(imageName);
+        //    var imageBrush = new ImageBrush(img);
+        //    //imageBrush.Viewport = new Rect(0.1, 0.321, 0.7, 0.557);
+        //    double xRatio = point.X / resultCanvas.ActualWidth;
+        //    double yRatio = point.Y / resultCanvas.ActualWidth;
+        //    //imageBrush.Viewport = new Rect(new Point(xRatio - 0.05, yRatio - 0.05), new Size(0.1, 0.1));
+        //    imageBrush.Viewbox = new Rect(new Point(xRatio - 0.05, yRatio - 0.05), new Size(0.1, 0.1));
+        //    rectSubImage.Fill = imageBrush;
+        //}
 
 
-        void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            UpdateBackgroundImage(imageName);
-        }
+        //void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    UpdateBackgroundImage(imageName);
+        //}
 
-        private void btnApply_Click(object sender, RoutedEventArgs e)
-        {
-            #region check settings
-            bool bok = CheckSettings();
-            if (!bok)
-                return;
-            CreateOutputFolder();
+        //private void btnApply_Click(object sender, RoutedEventArgs e)
+        //{
+        //    #region check settings
+        //    bool bok = CheckSettings();
+        //    if (!bok)
+        //        return;
+        //    CreateOutputFolder();
           
-            #endregion
-            IEngine iEngine = new IEngine();
-            iEngine.Load(imageName);
-            MPoint[] points = new MPoint[200];
-            int cnt = 0;
-            RefPositions refPositions = new RefPositions();
-            string markedImageFile = iEngine.MarkClones(new ConstrainSettings(10, 200),refPositions,ref cnt, ref points);
-            UpdateBackgroundImage(markedImageFile);
-            SetInfo(string.Format("找到{0}个克隆。", cnt),false);
-            List<MPoint> pts = GetFirstNPts(points,cnt);
-            UpdateCloneInfos(pts);
-            resultCanvas.SetMarkFlags(pts);
-        }
+        //    #endregion
+        //    IEngine iEngine = new IEngine();
+        //    iEngine.Load(imageName);
+        //    MPoint[] points = new MPoint[200];
+        //    int cnt = 0;
+        //    RefPositions refPositions = new RefPositions();
+        //    string markedImageFile = iEngine.MarkClones(new ConstrainSettings(10, 200),refPositions,ref cnt, ref points);
+        //    UpdateBackgroundImage(markedImageFile);
+        //    SetInfo(string.Format("找到{0}个克隆。", cnt),false);
+        //    List<MPoint> pts = GetFirstNPts(points,cnt);
+        //    UpdateCloneInfos(pts);
+        //    resultCanvas.SetMarkFlags(pts);
+        //}
 
-        private void CreateOutputFolder()
-        {
-            string dir = ConfigurationManager.AppSettings["imageFolder"];
-            string sOutputFolder = dir + "\\output\\";
-            if (!Directory.Exists(sOutputFolder))
-                Directory.CreateDirectory(sOutputFolder);
-        }
+        //private void CreateOutputFolder()
+        //{
+        //    string dir = ConfigurationManager.AppSettings["imageFolder"];
+        //    string sOutputFolder = dir + "\\output\\";
+        //    if (!Directory.Exists(sOutputFolder))
+        //        Directory.CreateDirectory(sOutputFolder);
+        //}
 
-        private void UpdateCloneInfos(List<MPoint> pts)
-        {
-            cloneInfos.Clear();
-            for(int i = 0; i < pts.Count; i++)
-            {
-                cloneInfos.Add(new CloneInfo(i+1,new Point(pts[i].x,pts[i].y)));
-            }
-            lvCloneInfos.ItemsSource = cloneInfos;
-        }
+        //private void UpdateCloneInfos(List<MPoint> pts)
+        //{
+        //    cloneInfos.Clear();
+        //    for(int i = 0; i < pts.Count; i++)
+        //    {
+        //        cloneInfos.Add(new CloneInfo(i+1,new Point(pts[i].x,pts[i].y)));
+        //    }
+        //    lvCloneInfos.ItemsSource = cloneInfos;
+        //}
 
-        private bool CheckSettings()
-        {
-            int cntConstrain;
-            bool bok = int.TryParse(txtCnt.Text, out cntConstrain);
-            if (!bok)
-                SetInfo("克隆数量必须大于0");
-            return bok;
-        }
+        //private bool CheckSettings()
+        //{
+        //    int cntConstrain;
+        //    bool bok = int.TryParse(txtCnt.Text, out cntConstrain);
+        //    if (!bok)
+        //        SetInfo("克隆数量必须大于0");
+        //    return bok;
+        //}
 
-        private void SetInfo(string s, bool bError = true)
-        {
-            txtInfo.Foreground = bError ? Brushes.Red : Brushes.Black;
-            txtInfo.Text = s;
-        }
+        //private void SetInfo(string s, bool bError = true)
+        //{
+        //    txtInfo.Foreground = bError ? Brushes.Red : Brushes.Black;
+        //    txtInfo.Text = s;
+        //}
 
-        private List<MPoint> GetFirstNPts(MPoint[] points, int retCnt)
-        {
-            int cntConstrain = int.Parse(txtCnt.Text);
-            int min = Math.Min(retCnt, cntConstrain);
-            var pts =  new List<MPoint>();
-            if((bool)rdbRandom.IsChecked)
-            {
-                Random rnd = new Random();
-                points = points.OrderBy(x => rnd.Next()).ToArray();
-            }
-            for (int i = 0; i < min; i++)
-            {
-                pts.Add(new MPoint(points[i].x, points[i].y, i + 1));
-            }
-            return pts;
-        }
+        //private List<MPoint> GetFirstNPts(MPoint[] points, int retCnt)
+        //{
+        //    int cntConstrain = int.Parse(txtCnt.Text);
+        //    int min = Math.Min(retCnt, cntConstrain);
+        //    var pts =  new List<MPoint>();
+        //    if((bool)rdbRandom.IsChecked)
+        //    {
+        //        Random rnd = new Random();
+        //        points = points.OrderBy(x => rnd.Next()).ToArray();
+        //    }
+        //    for (int i = 0; i < min; i++)
+        //    {
+        //        pts.Add(new MPoint(points[i].x, points[i].y, i + 1));
+        //    }
+        //    return pts;
+        //}
 
-        private void UpdateBackgroundImage(string resFile)
-        {
-            var imgSource = ImageHelper.BitmapFromFile(resFile);
-            ImageBrush imgBrush = new ImageBrush();
-            imgBrush.ImageSource = imgSource;
-            resultCanvas.Background = imgBrush;
-            resultCanvas.ImageSize = new Size(imgSource.Width, imgSource.Height);
-        }
+        //private void UpdateBackgroundImage(string resFile)
+        //{
+        //    var imgSource = ImageHelper.BitmapFromFile(resFile);
+        //    ImageBrush imgBrush = new ImageBrush();
+        //    imgBrush.ImageSource = imgSource;
+        //    resultCanvas.Background = imgBrush;
+        //    resultCanvas.ImageSize = new Size(imgSource.Width, imgSource.Height);
+        //}
 
-        private void btnSave_Click(object sender, RoutedEventArgs e)
-        {
-            bool bok = CheckSettings();
-            if (!bok)
-                return;
+        //private void btnSave_Click(object sender, RoutedEventArgs e)
+        //{
+        //    bool bok = CheckSettings();
+        //    if (!bok)
+        //        return;
 
-            Settings settings = new Settings();
-            settings.cloneCnt = int.Parse(txtCnt.Text);
-            settings.selectionMethod = (bool)rdbMaxArea.IsChecked ? SelectionMethod.biggest : SelectionMethod.random;
-            string sFile = FolderHelper.GetConfigFolder() + "settings.xml"; 
-            settings.Save(sFile);
+        //    Settings settings = new Settings();
+        //    settings.cloneCnt = int.Parse(txtCnt.Text);
+        //    settings.selectionMethod = (bool)rdbMaxArea.IsChecked ? SelectionMethod.biggest : SelectionMethod.random;
+        //    string sFile = FolderHelper.GetConfigFolder() + "settings.xml"; 
+        //    settings.Save(sFile);
 
-            SetInfo(string.Format("配置文件已被保存到：{0}",sFile),false);
-        }
+        //    SetInfo(string.Format("配置文件已被保存到：{0}",sFile),false);
+        //}
 
         #region commands
         private void CommandHelp_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -182,6 +182,21 @@ namespace PickClone
             e.CanExecute = true;
         }
         #endregion
+
+        private void btnCalib_Click(object sender, RoutedEventArgs e)
+        {
+            userControlHost.Children.Clear();
+        }
+
+        private void btnSet_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnExecute_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
 
       
 

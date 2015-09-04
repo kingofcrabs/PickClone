@@ -11,96 +11,45 @@
         <Grid.Resources>
             <local:Double2StringConverter x:Key="double2StringConverter" />
         </Grid.Resources>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="300"/>
-        </Grid.ColumnDefinitions>
-        <Menu Height="20" Grid.Column="1" HorizontalAlignment="Right" Name="menu1"  VerticalAlignment="Top" Width="48" Margin="0,1,0,0">
-            <MenuItem Header="帮助" FontFamily="SimSun" FontSize="12">
-                <MenuItem Header="关于" Command="Help"/>
-            </MenuItem>
-        </Menu>
-        <local:MarkCanvas x:Name="resultCanvas" Background="LightYellow" Grid.RowSpan="2">
-        </local:MarkCanvas>
-        <TabControl Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
-            <TabItem Header="设置">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="400"/>
-                            <RowDefinition Height= "*"/>
-                            <RowDefinition Height= "40"/>
-                        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel >
+                <Label Content="步骤指示：" Width="100"/>
+                
+            </StackPanel>
+            <StackPanel Orientation="Vertical" >
+                <Button Name="btnCalib" Click="btnCalib_Click"  ToolTip="校准参考点物理位置.">
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="/images/Calibration.png" Height="100"/>
+                        <TextBlock FontSize="16" TextAlignment="Center" Margin="3,0,0,0">校准</TextBlock>
+                    </StackPanel>
+                </Button>
 
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="40"/>
-                                <RowDefinition Height= "40"/>
-                                <RowDefinition Height= "*"/>
-                                <RowDefinition Height= "40"/>
-                                <RowDefinition Height= "40"/>
-                        </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="80"/>
-                                <ColumnDefinition Width= "0.5*"/>
-                                <ColumnDefinition Width= "0.5*"/>
-                            </Grid.ColumnDefinitions>
+                <!--<Button Name="btnSet" Click="btnSet_Click"  ToolTip="设置挑选条件.">
+                    <StackPanel Orientation="Vertical" >
+                        <Image Source="/Images/open.jpg"  Height="55"/>
+                        <TextBlock FontSize="16" TextAlignment="Center" Margin="3,0,0,0">设置</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Name="btnExecute" Click="btnExecute_Click"  ToolTip="运行并查看结果.">
+                    <StackPanel Orientation="Vertical" >
+                        <Image Source="/Images/merge.png"  Height="55"/>
+                        <TextBlock FontSize="16" TextAlignment="Center" Margin="3,0,0,0">运行</TextBlock>
+                    </StackPanel>
+                </Button>-->
+            </StackPanel>
+            <Grid Name="userControlHost" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            </Grid>
+            <Menu Height="24" Grid.Column="3" HorizontalAlignment="Right" Name="menu1"  VerticalAlignment="Top" Width="48" Margin="0,1,0,0">
+                <MenuItem Header="帮助" FontFamily="SimSun" FontSize="14" TabIndex="7">
+                    <MenuItem Header="关于" Command="Help"/>
+                </MenuItem>
+            </Menu>
 
-                            <Label Content="数量：" VerticalAlignment="Center" />
-                            <TextBox Name="txtCnt" VerticalAlignment="Center" TextWrapping="Wrap" Text="5" Grid.Column="1"/>
-                            <Label Grid.Row="1" VerticalAlignment="Center" Content="筛选方法：">
-
-                            </Label>
-                            <RadioButton Name="rdbMaxArea" Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" Content="面积最大" IsChecked="True"/>
-                            <RadioButton Name="rdbRandom" Grid.Row="1" Grid.Column="2"  VerticalAlignment="Center" Content="随机"/>
-                            <Button Name="btnApply" Grid.ColumnSpan="3" Content="应用" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="btnApply_Click"  Grid.Row="3"/>
-                            <Button Name="btnSave" Grid.ColumnSpan="3" Content="保存" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="btnSave_Click"  Grid.Row="4"/>
-                    </Grid>
-                        <Grid Grid.Row="1">
-                            <Label Content="提示：" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
-                            <TextBox Name="txtInfo" IsReadOnly="True" Margin="0,30,0,0" VerticalAlignment="Stretch" TextWrapping="Wrap" />
-                        </Grid>
-                    </Grid>
-            </TabItem>
-            <TabItem Header="结果">
-                <Grid>
-                   <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height= "300"/>
-                   </Grid.RowDefinitions>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="30"/>
-                            <RowDefinition Height= "*"/>
-                            <RowDefinition Height="40"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.8*"/>
-                            <ColumnDefinition Width="0.2*"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Content="克隆信息：" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                        <ListView Name="lvCloneInfos" Grid.Row="1">
-                            <ListView.Resources>
-                                <Style TargetType="{x:Type GridViewColumnHeader}">
-                                    <Setter Property="HorizontalContentAlignment" Value="Left" />
-                                </Style>
-                            </ListView.Resources>
-                            <ListView.View>
-                               
-                                <GridView>
-                                    <GridViewColumn Header="编号" Width="30" DisplayMemberBinding="{Binding Path=ID}"></GridViewColumn>
-                                    <GridViewColumn Header="位置" Width="200"  DisplayMemberBinding="{Binding Path=PositionString }"></GridViewColumn>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
-                        <StackPanel Grid.Column="1" Grid.Row="1"/>
-                    </Grid>
-                    <Grid Grid.Row="1">
-                        <Rectangle Name="rectSubImage"/>
-                    </Grid>
-                </Grid>
-            </TabItem>
-            <ListBox Height="100" Width="100"/>
-        </TabControl>
+        </Grid>
 
     </Grid>
 </Window>

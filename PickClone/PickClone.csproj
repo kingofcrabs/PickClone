@@ -65,6 +65,9 @@
     <Compile Include="MarkCanvas.cs" />
     <Compile Include="RangeSlider.xaml.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="userControls\Calibration.xaml.cs">
+      <DependentUpon>Calibration.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Worklist.cs" />
     <Page Include="HelpForm.xaml">
       <SubType>Designer</SubType>
@@ -85,6 +88,10 @@
     <Page Include="RangeSlider.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="userControls\Calibration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -117,6 +124,9 @@
       <Project>{9f46951f-d766-4801-9aed-44dc5f017eb9}</Project>
       <Name>EngineDll</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\Calibration.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
