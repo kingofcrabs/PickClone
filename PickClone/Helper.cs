@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -29,6 +30,27 @@ namespace PickClone
     partial class SerialHelper
     {
         
+    }
+
+    public class Mics
+    {
+        static public Bitmap LoadLatestImage(bool bUseTestImage, string testImagePath)
+        {
+
+            Bitmap img;
+            string s = FolderHelper.GetLatestImagePath();
+            if (bUseTestImage)
+                s = testImagePath;
+
+            if (!File.Exists(s))
+                throw new Exception("未能采集到图片！");
+
+            using (var bmpTemp = new Bitmap(s))
+            {
+                img = new Bitmap(bmpTemp);
+            }
+            return img;
+        }
     }
 
     public class FolderHelper
@@ -79,9 +101,21 @@ namespace PickClone
                 Directory.CreateDirectory(sFolder);
         }
 
-        static public string GetLatestImage()
+        static public string GetLatestImagePath()
         {
             return GetDataFolder() + "latest.jpg";
+        }
+
+        internal static string GetTestImagePath()
+        {
+            return GetDataFolder() + "test.jpg";
+        }
+
+        internal static string GetIconFolder()
+        {
+            string sDataFolder = GetExeParentFolder() + "Icons\\";
+            return sDataFolder;
+            
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using EngineDll;
+using PickClone.userControls;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -23,14 +24,25 @@ namespace PickClone
     public partial class MainWindow : Window
     {
         List<CloneInfo> cloneInfos = new List<CloneInfo>();
-        string imageName = "";
-        bool bSilent = false;
+        StepViewModel stepViewModel = new StepViewModel();
+        List<UserControl> subForms = new List<UserControl>();
+#region stage controls
+        AcquireImageForm acquireImageForm = new AcquireImageForm();
+        
+#endregion
         public MainWindow()
         {
             InitializeComponent();
-            //this.MouseLeftButtonUp += MainWindow_MouseLeftButtonUp;
-            //imageName = FolderHelper.GetLatestImage();
-            //this.Loaded += MainWindow_Loaded;
+            this.Loaded += MainWindow_Loaded;
+         
+        }
+
+        void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            lstSteps.DataContext = stepViewModel.StepsModel;
+            //subForms.Add(new AcquireImageForm());
+            //acquireImageForm.Visibility = Visibility.Visible;
+            //userControlHost.Children.Add(acquireImageForm);
         }
 
         //public MainWindow(string[] p)
@@ -183,19 +195,29 @@ namespace PickClone
         }
         #endregion
 
-        private void btnCalib_Click(object sender, RoutedEventArgs e)
+        private void lstSteps_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            userControlHost.Children.Clear();
+            var item = ItemsControl.ContainerFromElement(lstSteps, e.OriginalSource as DependencyObject) as ListBoxItem;
+            if (item != null)
+            {
+                Stage stage2Go = ((StepDesc)item.Content).CorrespondingStage;
+                 NavigateTo(stage2Go);
+
+            }
         }
 
-        private void btnSet_Click(object sender, RoutedEventArgs e)
+        private void NavigateTo(Stage stage)
         {
+           
+            foreach(var subForm in subForms)
+            {
+                IStage istage = (IStage)subForm;
+                istage.OnNavigateTo(stage);
+            }
+            if (lstSteps == null)
+                return;
 
-        }
-
-        private void btnExecute_Click(object sender, RoutedEventArgs e)
-        {
-
+            lstSteps.SelectedIndex = (int)stage;
         }
 
       

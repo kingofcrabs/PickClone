@@ -58,17 +58,29 @@
     </ApplicationDefinition>
     <Compile Include="Calibration.cs" />
     <Compile Include="CloneInfo.cs" />
+    <Compile Include="ThridPartyControl\Block.xaml.cs" />
+    <Compile Include="ThridPartyControl\LoadingAnimation.xaml.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="HelpForm.xaml.cs">
       <DependentUpon>HelpForm.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Stages.cs" />
     <Compile Include="MarkCanvas.cs" />
     <Compile Include="RangeSlider.xaml.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="userControls\Calibration.xaml.cs">
-      <DependentUpon>Calibration.xaml</DependentUpon>
+    <Compile Include="StepViewMode.cs" />
+    <Compile Include="userControls\AcquireImage.xaml.cs">
+      <DependentUpon>AcquireImage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Worklist.cs" />
+    <Page Include="ThridPartyControl\Block.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ThridPartyControl\LoadingAnimation.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="HelpForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -89,7 +101,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="userControls\Calibration.xaml">
+    <Page Include="userControls\AcquireImage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -120,13 +132,20 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Do3Acquier\Do3Acquier.csproj">
+      <Project>{ebce2ab7-09ea-490a-93e1-e141ba40e68d}</Project>
+      <Name>Do3Acquier</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EngineDll\EngineDll.vcxproj">
       <Project>{9f46951f-d766-4801-9aed-44dc5f017eb9}</Project>
       <Name>EngineDll</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\Calibration.png" />
+    <Resource Include="images\Camera.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\Calibration.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

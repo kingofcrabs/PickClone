@@ -13,34 +13,21 @@
         </Grid.Resources>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="130"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <StackPanel >
-                <Label Content="步骤指示：" Width="100"/>
-                
-            </StackPanel>
-            <StackPanel Orientation="Vertical" >
-                <Button Name="btnCalib" Click="btnCalib_Click"  ToolTip="校准参考点物理位置.">
-                    <StackPanel Orientation="Vertical">
-                        <Image Source="/images/Calibration.png" Height="100"/>
-                        <TextBlock FontSize="16" TextAlignment="Center" Margin="3,0,0,0">校准</TextBlock>
-                    </StackPanel>
-                </Button>
-
-                <!--<Button Name="btnSet" Click="btnSet_Click"  ToolTip="设置挑选条件.">
-                    <StackPanel Orientation="Vertical" >
-                        <Image Source="/Images/open.jpg"  Height="55"/>
-                        <TextBlock FontSize="16" TextAlignment="Center" Margin="3,0,0,0">设置</TextBlock>
-                    </StackPanel>
-                </Button>
-                <Button Name="btnExecute" Click="btnExecute_Click"  ToolTip="运行并查看结果.">
-                    <StackPanel Orientation="Vertical" >
-                        <Image Source="/Images/merge.png"  Height="55"/>
-                        <TextBlock FontSize="16" TextAlignment="Center" Margin="3,0,0,0">运行</TextBlock>
-                    </StackPanel>
-                </Button>-->
-            </StackPanel>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Label Content="功能选择：" FontSize="16" Width="100" VerticalAlignment="Center"/>
+            <ListBox   ItemsSource="{Binding}" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" ItemTemplate="{StaticResource ImageListbox}"   Name="lstSteps" SelectionMode="Single"   PreviewMouseLeftButtonUp="lstSteps_PreviewMouseLeftButtonUp" BorderBrush="LightGray">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True" Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
             <Grid Name="userControlHost" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             </Grid>
             <Menu Height="24" Grid.Column="3" HorizontalAlignment="Right" Name="menu1"  VerticalAlignment="Top" Width="48" Margin="0,1,0,0">
