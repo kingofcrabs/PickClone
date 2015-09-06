@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,15 +12,18 @@ namespace PickClone
     [Serializable]
     public class Settings
     {
-        public int cloneCnt;
-        public SelectionMethod selectionMethod;
+        
+        public SelectionMethod SelectionMethod{get;set;}
+        public int CloneCnt { get; set; }
         public Settings()
         {
-            cloneCnt = 50;
-            selectionMethod = SelectionMethod.biggest;
+            CloneCnt = 50;
+            SelectionMethod = SelectionMethod.biggest;
         }
-        public void Save(string sFile)
+        public void Save()
         {
+            string plateType = ConfigValues.PlateType;
+            string sFile = FolderHelper.GetConfigFolder() + plateType + ".xml";
             Save(this, sFile);
         }
 
@@ -31,9 +35,14 @@ namespace PickClone
             stream.Close();
         }
 
-        public static Settings Load(string sFile)
+        public static Settings Load()
         {
-            return Deserialize<Settings>(sFile);
+            string plateType = ConfigValues.PlateType;
+            string sFile = FolderHelper.GetConfigFolder() + plateType + ".xml";
+            if (!File.Exists(sFile))
+                return null;
+            string sContent = File.ReadAllText(sFile);
+            return Deserialize<Settings>(sContent);
         }
 
         private static T Deserialize<T>(string xml)

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PickClone"
               xmlns:control="clr-namespace:LoadingControl.Control"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="900">
@@ -12,9 +13,9 @@
             <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
-            <Canvas x:Name="myCanvas" Visibility="Hidden" Background="LightBlue"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <local:MarkCanvas x:Name="resultCanvas" Visibility="Hidden" Background="LightBlue"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
-            </Canvas>
+            </local:MarkCanvas>
 
             <Canvas Name="loading" Visibility="Visible">
                 <control:LoadingAnimation Canvas.Left="342" Canvas.Top="103" />

@@ -28,7 +28,7 @@
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
             </ListBox>
-            <Grid Name="userControlHost" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid Name="userControlHost" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             </Grid>
             <Menu Height="24" Grid.Column="3" HorizontalAlignment="Right" Name="menu1"  VerticalAlignment="Top" Width="48" Margin="0,1,0,0">
                 <MenuItem Header="帮助" FontFamily="SimSun" FontSize="14" TabIndex="7">

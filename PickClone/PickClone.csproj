@@ -72,6 +72,9 @@
     <Compile Include="userControls\AcquireImage.xaml.cs">
       <DependentUpon>AcquireImage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="userControls\SettingsForm.xaml.cs">
+      <DependentUpon>SettingsForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Worklist.cs" />
     <Page Include="ThridPartyControl\Block.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -102,6 +105,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="userControls\AcquireImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="userControls\SettingsForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

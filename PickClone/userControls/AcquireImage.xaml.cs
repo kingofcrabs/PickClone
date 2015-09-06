@@ -1,4 +1,5 @@
 ﻿using Do3Acquier;
+using EngineDll;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -38,8 +39,8 @@ namespace PickClone.userControls
         private void StartAcquire()
         {
             EnableButtons(false);
-            bool bUseTestImage = bool.Parse(ConfigurationManager.AppSettings["useTestImage"]);
-            if (!bUseTestImage)
+            //bool bUseTestImage = bool.Parse(ConfigurationManager.AppSettings["useTestImage"]);
+            if (!ConfigValues.UseTestImage)
             {
                 StartRealAcquire();
             }
@@ -47,6 +48,7 @@ namespace PickClone.userControls
             {
                 HideLoadingImage();
                 RefreshImage();
+                Analysis();
                 EnableButtons(true);
             }
         }
@@ -59,14 +61,70 @@ namespace PickClone.userControls
                  HideLoadingImage();
                  if (errMsg != "")
                  {
-                     myCanvas.Children.Clear();
+                     resultCanvas.Children.Clear();
                      SetInfo(errMsg + "请重新连接相机线。关闭程序，再来一次。", System.Windows.Media.Brushes.Red);
                      return;
                  }
                  RefreshImage();
+                 Analysis();
                  EnableButtons(true);
              });
         }
+
+        private void Analysis()
+        {
+            IEngine iEngine = new IEngine();
+            string sImgPath = ConfigValues.UseTestImage ? FolderHelper.GetTestImagePath() : FolderHelper.GetLatestImagePath();
+            iEngine.Load(sImgPath);
+            MPoint[] points = new MPoint[200];
+            int cnt = 0;
+            RefPositions refPositions = new RefPositions();
+            string markedImageFile = iEngine.MarkClones(new ConstrainSettings(10, 200), refPositions, ref cnt, ref points);
+            if( cnt > 0)
+            {
+               var pts = GetFirstNPts(points, cnt);
+               resultCanvas.SetMarkFlags(pts);
+               UpdateBackgroundImage(sImgPath);
+            }
+            
+            SetInfo(string.Format("找到{0}个克隆。", cnt), false);
+           
+        }
+
+        private void UpdateBackgroundImage(string markedImageFile)
+        {
+            var imgSource = ImageHelper.BitmapFromFile(markedImageFile);
+            ImageBrush imgBrush = new ImageBrush();
+            imgBrush.ImageSource = imgSource;
+            //imgBrush.Stretch = Stretch.Uniform;
+            resultCanvas.Background = imgBrush;
+            resultCanvas.ImageSize = new System.Windows.Size(imgSource.Width, imgSource.Height);
+        }
+
+        private List<MPoint> GetFirstNPts(MPoint[] points, int retCnt)
+        {
+            
+            int cntConstrain = GlobalVars.Instance.Settings.CloneCnt;
+            int min = Math.Min(retCnt, cntConstrain);
+            var pts = new List<MPoint>();
+            if (GlobalVars.Instance.Settings.SelectionMethod == SelectionMethod.random)
+            {
+                Random rnd = new Random();
+                points = points.OrderBy(x => rnd.Next()).ToArray();
+            }
+            for (int i = 0; i < min; i++)
+            {
+                pts.Add(new MPoint(points[i].x, points[i].y, i + 1));
+            }
+            return pts;
+        }
+
+        private void SetInfo(string s, bool hasError = true)
+        {
+            txtInfo.Text = s;
+            txtInfo.Foreground = hasError ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Black);
+        }
+
         private void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
             StartAcquire();
@@ -79,11 +137,10 @@ namespace PickClone.userControls
 
         private void RefreshImage()
         {
-            bool bUseTestImage = bool.Parse(ConfigurationManager.AppSettings["useTestImage"]);
             try
             {
-                _latestFrame = Mics.LoadLatestImage(bUseTestImage, FolderHelper.GetTestImagePath());
-                myCanvas.UpdateBackGroupImage(_latestFrame);
+                _latestFrame = Mics.LoadLatestImage(ConfigValues.UseTestImage, FolderHelper.GetTestImagePath());
+                resultCanvas.UpdateBackGroupImage(_latestFrame);
             }
             catch (Exception ex)
             {
@@ -102,7 +159,7 @@ namespace PickClone.userControls
         void HideLoadingImage()
         {
             loading.Visibility = Visibility.Hidden;
-            myCanvas.Visibility = System.Windows.Visibility.Visible;
+            resultCanvas.Visibility = System.Windows.Visibility.Visible;
         }
 
         void StartRealAcquire()
@@ -119,10 +176,8 @@ namespace PickClone.userControls
         public void OnNavigateTo(Stage stage)
         {
             this.Visibility = stage == m_CurStage ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
+            
         }
-
-        
-
     }
 
 

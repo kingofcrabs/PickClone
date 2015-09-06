@@ -26,10 +26,7 @@ namespace PickClone
         List<CloneInfo> cloneInfos = new List<CloneInfo>();
         StepViewModel stepViewModel = new StepViewModel();
         List<UserControl> subForms = new List<UserControl>();
-#region stage controls
-        AcquireImageForm acquireImageForm = new AcquireImageForm();
-        
-#endregion
+
         public MainWindow()
         {
             InitializeComponent();
@@ -40,9 +37,17 @@ namespace PickClone
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             lstSteps.DataContext = stepViewModel.StepsModel;
-            //subForms.Add(new AcquireImageForm());
-            //acquireImageForm.Visibility = Visibility.Visible;
-            //userControlHost.Children.Add(acquireImageForm);
+            var acquireImageForm = new AcquireImageForm();
+            var settingsForm = new SettingsForm();
+
+            acquireImageForm.Visibility = Visibility.Hidden;
+            settingsForm.Visibility = Visibility.Hidden;
+            subForms.Add(acquireImageForm);
+            subForms.Add(settingsForm);
+            foreach(var subForm in subForms)
+                userControlHost.Children.Add(subForm);
+
+            //settingsForm.Visibility = System.Windows.Visibility.Visible;
         }
 
         //public MainWindow(string[] p)
@@ -95,17 +100,7 @@ namespace PickClone
         //    CreateOutputFolder();
           
         //    #endregion
-        //    IEngine iEngine = new IEngine();
-        //    iEngine.Load(imageName);
-        //    MPoint[] points = new MPoint[200];
-        //    int cnt = 0;
-        //    RefPositions refPositions = new RefPositions();
-        //    string markedImageFile = iEngine.MarkClones(new ConstrainSettings(10, 200),refPositions,ref cnt, ref points);
-        //    UpdateBackgroundImage(markedImageFile);
-        //    SetInfo(string.Format("找到{0}个克隆。", cnt),false);
-        //    List<MPoint> pts = GetFirstNPts(points,cnt);
-        //    UpdateCloneInfos(pts);
-        //    resultCanvas.SetMarkFlags(pts);
+            
         //}
 
         //private void CreateOutputFolder()
@@ -201,8 +196,7 @@ namespace PickClone
             if (item != null)
             {
                 Stage stage2Go = ((StepDesc)item.Content).CorrespondingStage;
-                 NavigateTo(stage2Go);
-
+                NavigateTo(stage2Go);
             }
         }
 

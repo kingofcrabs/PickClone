@@ -26,10 +26,47 @@ namespace PickClone
         public static string ImagePath { get; set; }
     }
 
-
-    partial class SerialHelper
+    public class GlobalVars
     {
-        
+        static GlobalVars instance = null;
+        public Settings Settings { get; set; }
+        public static GlobalVars Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new GlobalVars();
+                return instance;
+            }
+        }
+
+        private GlobalVars()
+        {
+            Settings = Settings.Load();
+        }
+
+    }
+
+    public class ConfigValues
+    {
+        static bool useTestImage = bool.Parse(ConfigurationManager.AppSettings["useTestImage"]);
+        static string plateType = ConfigurationManager.AppSettings["plateType"];
+        static public bool UseTestImage
+        {
+            get
+            {
+                return useTestImage;
+            }
+        }
+
+
+        public static string PlateType
+        {
+            get
+            {
+                return plateType;
+            }
+        }
     }
 
     public class Mics
@@ -103,6 +140,7 @@ namespace PickClone
 
         static public string GetLatestImagePath()
         {
+
             return GetDataFolder() + "latest.jpg";
         }
 

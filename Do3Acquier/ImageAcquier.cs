@@ -23,6 +23,7 @@ namespace Do3Acquier
         public  delegate  void Finished(string errMsg);
         public event Finished onFinished;
         static int frames = 0;
+        readonly static int neededCameraCnt = 1;
         public static int SnapThreadCallback(int m_iCam, ref Byte pbyBuffer, ref tDSFrameInfo sFrInfo)
         {
             frames++;
@@ -35,9 +36,9 @@ namespace Do3Acquier
         {
             if (bInitialized)
                 return;
-            m_iCameraIDs = new int[2];
-            m_sCameraExpectedNameList = new string[] { "DSCD501000068", 
-                                                       "DSCD501000064" };    
+            m_iCameraIDs = new int[neededCameraCnt];
+            //m_sCameraExpectedNameList = new string[] { "DSCD501000068", 
+            //                                           "DSCD501000064" };    
             Stop();
             m_sCameraRealNameList = GetCameraList().ToArray();
             bool bok = CheckCameraNames(m_sCameraRealNameList.ToList());
@@ -45,7 +46,7 @@ namespace Do3Acquier
             {
                 throw new Exception("程序未注册！");
             }
-            for( int i = 0; i< 2; i++)
+            for( int i = 0; i< neededCameraCnt; i++)
             {
                 string sName = m_sCameraRealNameList[i];
                 emDSCameraStatus status = Camera.CameraInit(psub, sName, IntPtr.Zero, ref m_iCameraIDs[i]);
@@ -63,8 +64,7 @@ namespace Do3Acquier
 
         private bool CheckCameraNames(List<string> sCameraNames)
         {
-            return sCameraNames.Exists(x => x.Contains("DSCD501000068"))
-                && sCameraNames.Exists(x => x.Contains("DSCD501000064"));
+            return sCameraNames.Contains("USB2_CMOS_5M_F@CD501000021");
         }
 
         private int GetIndex(int id)
@@ -105,7 +105,7 @@ namespace Do3Acquier
 
             try
             {
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < neededCameraCnt; i++)
                 {
                     Camera.CameraStop(m_iCameraIDs[i]);
                     Camera.CameraUnInit(m_iCameraIDs[i]);
@@ -132,10 +132,10 @@ namespace Do3Acquier
                 return;
             }
             Thread.Sleep(1000);
-            if (!IsRightOrder(m_sCameraRealNameList[cameraID-1], m_sCameraExpectedNameList[cameraID-1]))
-            {
-                cameraID = 3 - cameraID;
-            }
+            //if (!IsRightOrder(m_sCameraRealNameList[cameraID - 1], m_sCameraExpectedNameList[cameraID - 1]))
+            //{
+            //    cameraID = 3 - cameraID;
+            //}
             if (File.Exists(sFile))
                 File.Delete(sFile);
             string sOrgFile = sFile;
@@ -185,12 +185,12 @@ namespace Do3Acquier
                 throw new Exception("没有找到相机！");
             }
 
-            if (iNum < 2)
-            {
-                throw new Exception("只找到一个相机!");
-            }
+            //if (iNum < 2)
+            //{
+            //    throw new Exception("只找到一个相机!");
+            //}
             List<string> sCameraList = new List<string>();
-            for( int i = 0; i< 2; i++)
+            for (int i = 0; i < neededCameraCnt; i++)
             {
                 string sCameraName = "";
                 pCameraInfo[i] = (tDSCameraDevInfo)Marshal.PtrToStructure((IntPtr)((UInt32)pt + i * Marshal.SizeOf(typeof(tDSCameraDevInfo))), typeof(tDSCameraDevInfo));
