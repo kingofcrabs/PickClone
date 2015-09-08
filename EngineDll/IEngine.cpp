@@ -1,5 +1,8 @@
+
+#include "stdafx.h"
 #include "IEngine.h"
 #include <msclr\marshal_cppstd.h>
+
 
 namespace EngineDll
 {

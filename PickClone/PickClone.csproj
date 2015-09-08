@@ -26,7 +26,7 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -58,6 +58,7 @@
     </ApplicationDefinition>
     <Compile Include="Calibration.cs" />
     <Compile Include="CloneInfo.cs" />
+    <Compile Include="Interprocess.cs" />
     <Compile Include="ThridPartyControl\Block.xaml.cs" />
     <Compile Include="ThridPartyControl\LoadingAnimation.xaml.cs" />
     <Compile Include="Helper.cs" />

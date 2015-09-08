@@ -14,7 +14,7 @@ namespace PickClone
         FourPoints physicalRef;
         public Calibration()
         {
-            physicalRef = ReadCalibFile(ConfigurationManager.AppSettings["plateType"]);
+            physicalRef = ReadCalibFile(ConfigValues.PlateType);
         }
 
         public void SetRefPixels(RefPositions refPos)
@@ -24,13 +24,13 @@ namespace PickClone
 
         private FourPoints ReadCalibFile(string calibType)
         {
-            string sFile = FolderHelper.GetConfigFolder() + calibType + ".txt";
-            var strs = File.ReadAllLines(sFile);
-            int top = GetValue(Dir.top,strs);//int.Parse(strs[(int)Dir.top]);
-            int right = GetValue(Dir.right, strs);
-            int bottom = GetValue(Dir.bottom, strs);
-            int left = GetValue(Dir.left, strs);
-            return new FourPoints(top, bottom, left, right);
+            string sFile = FolderHelper.GetConfigFolder() + calibType + "_calib.xml";
+            if(!File.Exists(sFile))
+            {
+                SerializeHelper.Save(new FourPoints(0, 1000, 0, 1000), sFile);
+            }
+            string allText = File.ReadAllText(sFile);
+            return SerializeHelper.Deserialize<FourPoints>(allText);
         }
 
         private int GetValue(Dir dir, string[] strs)
@@ -64,12 +64,21 @@ namespace PickClone
         right = 3
     }
 
-    class FourPoints
+    [Serializable]
+    public class FourPoints
     {
         public int top;
         public int bottom;
         public int left;
         public int right;
+
+        public FourPoints()
+        {
+            top = 0;
+            bottom = 1000;
+            left = 0;
+            right = 1000;
+        }
         public FourPoints(int top, int bottom, int left, int right)
         {
             this.top = top;

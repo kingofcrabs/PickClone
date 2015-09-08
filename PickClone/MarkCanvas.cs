@@ -23,33 +23,33 @@ namespace PickClone
 
         internal void LeftButtonUp(Point point)
         {
-            ViewClone(point);
+            //ViewClone(point);
             this.InvalidateVisual();
         }
 
-        private void ViewClone(Point point)
-        {
-            if(pts == null || pts.Count == 0 )
-                return;
+        //private void ViewClone(Point point)
+        //{
+        //    if(pts == null || pts.Count == 0 )
+        //        return;
             
-            for(int i = 0; i< pts.Count; i++)
-            {
-                pts[i].isCurrent = false;
-            }
-            Point ptInImage = Convert2BitmapCoord(point);
-            double minDistance = 10000;
-            int minIndex = 0;
-            for(int i = 0; i< pts.Count; i++)
-            {
-                double tmpDistance = GetDistance(ptInImage, pts[i]);
-                if(tmpDistance < minDistance)
-                {
-                    minDistance = tmpDistance;
-                    minIndex = i;
-                }
-            }
-            pts[minIndex].isCurrent = true;
-        }
+        //    for(int i = 0; i< pts.Count; i++)
+        //    {
+        //        pts[i].isCurrent = false;
+        //    }
+        //    Point ptInImage = Convert2BitmapCoord(point);
+        //    double minDistance = 10000;
+        //    int minIndex = 0;
+        //    for(int i = 0; i< pts.Count; i++)
+        //    {
+        //        double tmpDistance = GetDistance(ptInImage, pts[i]);
+        //        if(tmpDistance < minDistance)
+        //        {
+        //            minDistance = tmpDistance;
+        //            minIndex = i;
+        //        }
+        //    }
+        //    pts[minIndex].isCurrent = true;
+        //}
 
         private double GetDistance(Point ptInImage, MPoint mPoint)
         {
@@ -94,7 +94,22 @@ namespace PickClone
 
         private Point Convert2UICoord(MPoint pt)
         {
-            return new Point((int)(pt.x / ImageSize.Width * this.ActualWidth),(int)( pt.y / ImageSize.Height * this.ActualHeight));
+         
+            double screenRatio = this.ActualWidth / this.ActualHeight;
+            double realRatio = ImageSize.Width / ImageSize.Height;
+            double usableHeight, usableWidth;
+            if (realRatio > screenRatio)//x方向占满
+            {
+                usableHeight = this.ActualHeight / (realRatio / screenRatio);
+                usableWidth = this.ActualWidth;
+            }
+            else //y方向占满
+            {
+                usableWidth = this.ActualWidth / (screenRatio / realRatio);
+                usableHeight = this.ActualHeight;
+            }
+
+            return new Point((int)(pt.x / ImageSize.Width * usableWidth), (int)(pt.y / ImageSize.Height * usableHeight));
         }
 
         private Point Convert2BitmapCoord(Point pt)

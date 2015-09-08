@@ -20,9 +20,9 @@ namespace PickClone
                 tipSelections.Add((int)Math.Pow(2, i));
             }
             calib.SetRefPixels(refPositions);
-            //calib.SetRefPixels(calibPositions)
         }
-        List<string> Generate(List<MPoint> pts)
+
+        public List<string> Generate(List<MPoint> pts)
         {
             List<string> strs = new List<string>();
             strs.Add("W;");
@@ -42,7 +42,7 @@ namespace PickClone
             strs.Add("B;Command(\"C5 PAZ2100,2100,2100,2100,2100,2100,2100,2100\",1,1,,,2,2,0);");
             string movX = string.Format("B;Command(\"C5 PAX{0}\",1,1,,,2,2,0);",calib.ConvertX(pt.x));
             strs.Add(movX);
-            string movY = string.Format("B;Command(\"C5 PAY{1}\",1,1,,,2,2,0);",calib.ConvertY(pt.y));
+            string movY = string.Format("B;Command(\"C5 PAY{0}\",1,1,,,2,2,0);",calib.ConvertY(pt.y));
             strs.Add(movY);
             strs.Add("W;");
             strs.Add("B;Command(\"C5 PAZ2100,2100,2100,2100,2100,2100,2100,2100\",1,1,,,2,2,0);");

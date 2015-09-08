@@ -12,12 +12,12 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" Name="renderGrid">
             <local:MarkCanvas x:Name="resultCanvas" Visibility="Hidden" Background="LightBlue"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
             </local:MarkCanvas>
 
-            <Canvas Name="loading" Visibility="Visible">
+            <Canvas Name="loading" Visibility="Hidden">
                 <control:LoadingAnimation Canvas.Left="342" Canvas.Top="103" />
             </Canvas>
         </Grid>
@@ -27,7 +27,7 @@
                 <ColumnDefinition Width ="1*"/>
             </Grid.ColumnDefinitions>
             <Label Content="提示：" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
-            <TextBox Name="txtInfo" HorizontalAlignment="Left" Height="59" Margin="10,31,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="763"/>
+            <TextBox Name="txtInfo" Text="" HorizontalAlignment="Left" Height="59" Margin="10,31,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="763"/>
             <Button Content="刷新" Name="btnRefresh" Click="btnRefresh_Click" Grid.Column="1" HorizontalAlignment="Left" Margin="5,31,0,0" VerticalAlignment="Top" Width="96" Height="32"/>
 
         </Grid>

@@ -1,18 +1,18 @@
-﻿using Natchs.StageControls;
+﻿using PickClone.userControls;
 using System;
 using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 
-namespace Natchs.StageControls
+namespace PickClone
 {
     public class Invoker
     {
         public Action<string> sDel;
-        private StepMonitor owner;
+        private AcquireImageForm owner;
 
-        public Invoker(StepMonitor wOwner)
+        public Invoker(AcquireImageForm wOwner)
         {
             owner = wOwner;
         }
@@ -30,7 +30,7 @@ namespace Natchs.StageControls
 
     public class Pipeserver
     {
-        public static StepMonitor owner;
+        public static AcquireImageForm owner;
         public static Invoker ownerInvoker;
         public static string pipeName;
         private static NamedPipeServerStream pipeServer;
@@ -48,7 +48,7 @@ namespace Natchs.StageControls
             int numBytes = 0;
             StringBuilder msg = new StringBuilder();
             ownerInvoker.sDel = ExecuteCommand;
-            pipeName = "Natchs";
+            pipeName = "PickClone";
             try
             {
                 pipeServer = new NamedPipeServerStream(pipeName, PipeDirection.In, 1,

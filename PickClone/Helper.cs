@@ -7,6 +7,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Media.Imaging;
+using System.Xml;
+using System.Xml.Serialization;
 
 
 namespace PickClone
@@ -71,22 +73,36 @@ namespace PickClone
 
     public class Mics
     {
-        static public Bitmap LoadLatestImage(bool bUseTestImage, string testImagePath)
+       
+    }
+
+    public class SerializeHelper
+    {
+        public static T Deserialize<T>(string xml)
         {
-
-            Bitmap img;
-            string s = FolderHelper.GetLatestImagePath();
-            if (bUseTestImage)
-                s = testImagePath;
-
-            if (!File.Exists(s))
-                throw new Exception("未能采集到图片！");
-
-            using (var bmpTemp = new Bitmap(s))
+            if (string.IsNullOrEmpty(xml))
             {
-                img = new Bitmap(bmpTemp);
+                return default(T);
             }
-            return img;
+
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            XmlReaderSettings settings = new XmlReaderSettings();
+
+            using (StringReader textReader = new StringReader(xml))
+            {
+                using (XmlReader xmlReader = XmlReader.Create(textReader, settings))
+                {
+                    return (T)serializer.Deserialize(xmlReader);
+                }
+            }
+        }
+
+        public static void Save<T>(T t, string sFile)
+        {
+            XmlSerializer xs = new XmlSerializer(typeof(T));
+            Stream stream = new FileStream(sFile, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+            xs.Serialize(stream, t);
+            stream.Close();
         }
     }
 
@@ -110,6 +126,26 @@ namespace PickClone
             string sConfigFolder = GetExeParentFolder() + "Config\\";
             CreateIfNotExist(sConfigFolder);
             return sConfigFolder;
+        }
+
+        internal static string GetOutputFolder()
+        {
+            string sExeParent = GetExeParentFolder();
+            string sOutputFolder = sExeParent + "Output\\";
+            CreateIfNotExist(sOutputFolder);
+            return sOutputFolder;
+        }
+
+        static public string GetLatestImagePath()
+        {
+            bool bUseTestImage = bool.Parse(ConfigurationManager.AppSettings["useTestImage"]);
+            string s = GetLatestImagePathInner();
+            if (bUseTestImage)
+                s = GetTestImagePath();
+
+            if (!File.Exists(s))
+                throw new Exception("未能采集到图片！");
+            return s;
         }
 
         static public string GetDataFolder()
@@ -138,7 +174,7 @@ namespace PickClone
                 Directory.CreateDirectory(sFolder);
         }
 
-        static public string GetLatestImagePath()
+        private static string GetLatestImagePathInner()
         {
 
             return GetDataFolder() + "latest.jpg";
@@ -155,5 +191,7 @@ namespace PickClone
             return sDataFolder;
             
         }
+
+        
     }
 }

@@ -30,8 +30,7 @@ namespace PickClone.userControls
         private void Initialize()
         {
             settings = Settings.Load();
-            if (settings == null)
-                settings = new Settings();
+     
             rdbMaxArea.IsChecked = settings.SelectionMethod == SelectionMethod.biggest;
             rdbRandom.IsChecked = !rdbMaxArea.IsChecked;
             txtCnt.DataContext = settings;
