@@ -31,7 +31,6 @@ namespace PickClone
     public class GlobalVars
     {
         static GlobalVars instance = null;
-        public Settings Settings { get; set; }
         public static GlobalVars Instance
         {
             get
@@ -44,7 +43,6 @@ namespace PickClone
 
         private GlobalVars()
         {
-            Settings = Settings.Load();
         }
 
     }

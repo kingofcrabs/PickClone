@@ -14,7 +14,7 @@ namespace PickClone
         FourPoints physicalRef;
         public Calibration()
         {
-            physicalRef = ReadCalibFile(ConfigValues.PlateType);
+            physicalRef = Settings.Instance.PhysicalRef;
         }
 
         public void SetRefPixels(RefPositions refPos)
@@ -64,27 +64,5 @@ namespace PickClone
         right = 3
     }
 
-    [Serializable]
-    public class FourPoints
-    {
-        public int top;
-        public int bottom;
-        public int left;
-        public int right;
-
-        public FourPoints()
-        {
-            top = 0;
-            bottom = 1000;
-            left = 0;
-            right = 1000;
-        }
-        public FourPoints(int top, int bottom, int left, int right)
-        {
-            this.top = top;
-            this.bottom = bottom;
-            this.left = left;
-            this.right = right;
-        }
-    }
+   
 }

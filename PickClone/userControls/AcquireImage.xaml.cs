@@ -73,10 +73,10 @@ namespace PickClone.userControls
         private List<MPoint> GetFirstNPts(MPoint[] points, int retCnt)
         {
 
-            int cntConstrain = GlobalVars.Instance.Settings.CloneCnt;
+            int cntConstrain = Settings.Instance.CloneCnt;
             int min = Math.Min(retCnt, cntConstrain);
             var pts = new List<MPoint>();
-            if (GlobalVars.Instance.Settings.SelectionMethod == SelectionMethod.random)
+            if (Settings.Instance.SelectionMethod == SelectionMethod.random)
             {
                 Random rnd = new Random();
                 points = points.OrderBy(x => rnd.Next()).ToArray();

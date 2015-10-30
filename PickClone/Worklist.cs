@@ -46,11 +46,28 @@ namespace PickClone
             strs.Add(movY);
             strs.Add("W;");
             strs.Add("B;Command(\"C5 PAZ2100,2100,2100,2100,2100,2100,2100,2100\",1,1,,,2,2,0);");
-            strs.Add("B;Command(\"C5 PAZ950,1050,1050,1050,1050,1050,1050,1050\",1,1,,,2,2,0);");
+            string paz = GetPAZ(index);
+            strs.Add(string.Format("B;Command(\"C5 PAZ{0}\",1,1,,,2,2,0);",paz));
             strs.Add("B;Command(\"C5 SDM0,0\",1,1,,,2,2,0)");
             string mdt = string.Format("B;Command(\"C5 MDT{0},0,950,850\",1,1,,,2,2,0)", tipSelection);
             strs.Add(mdt);
             return strs;
+        }
+
+        private string GetPAZ(int index)
+        {
+            string wholeStr = "";
+            var lowerestVal = ConfigurationManager.AppSettings["zValue"];
+            for(int i = 0; i< 8; i++)
+            {
+                var sVal = i == index ? lowerestVal : "2100";
+                if( i != 8 -1)
+                {
+                    sVal += ",";
+                }
+                wholeStr += sVal;
+            }
+            return wholeStr;
         }
 
 
