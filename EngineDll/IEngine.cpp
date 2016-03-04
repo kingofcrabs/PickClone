@@ -42,7 +42,7 @@ namespace EngineDll
 		
 		for (auto pt : pts)
 		{
-			MPoint^ sysPoint = gcnew MPoint(pt.x, pt.y);
+			MPoint^ sysPoint = gcnew MPoint(pt.x, pt.y,i+1);
 			if (i == features->Length)
 				break;
 			features[i++] = sysPoint;
