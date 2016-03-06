@@ -39,14 +39,17 @@ namespace PickClone
         }
        
 
-        public static Settings Load()
+        public void Load()
         {
             string plateType = ConfigValues.PlateType;
             string sFile = FolderHelper.GetConfigFolder() + plateType + ".xml";
             if (!File.Exists(sFile))
-                return new Settings();
+            {
+                _instance = new Settings();
+                return;
+            }
             string sContent = File.ReadAllText(sFile);
-            return SerializeHelper.Deserialize<Settings>(sContent);
+            _instance = SerializeHelper.Deserialize<Settings>(sContent);
         }
 
 

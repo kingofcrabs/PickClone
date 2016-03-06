@@ -21,7 +21,7 @@ namespace PickClone.userControls
         Stage m_CurStage = Stage.Acquire;
         ImageAcquirer imageAcquirer = new ImageAcquirer();
         DateTime startTime;
-        
+
         public AcquireImageForm()
         {
             InitializeComponent();
@@ -99,7 +99,8 @@ namespace PickClone.userControls
             string markedImageFile = iEngine.MarkClones(new ConstrainSettings(10, 200), refPositions, ref cnt, ref points);
             if (cnt > 0)
             {
-                var pts = GetFirstNPts(points, cnt);
+                FilterProcessor filterProcessor = new FilterProcessor();
+                var pts = filterProcessor.GetInterestedPts(points, cnt); ;
                 resultCanvas.SetMarkFlags(pts);
                 UpdateBackgroundImage(sImgPath);
                 GenerateWorklist(pts, refPositions);
@@ -109,6 +110,7 @@ namespace PickClone.userControls
             SetInfo(string.Format("找到{0}个克隆。用时:{1}秒", cnt, seconds), false);
         }
 
+        
         void imageAcquirer_onFinished(string errMsg)
         {
             this.Dispatcher.BeginInvoke(

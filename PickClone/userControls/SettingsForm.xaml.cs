@@ -20,7 +20,6 @@ namespace PickClone.userControls
     public partial class SettingsForm : UserControl,IStage
     {
         Stage m_CurStage = Stage.Setting;
-        Settings settings;
         public SettingsForm()
         {
             InitializeComponent();
@@ -29,11 +28,11 @@ namespace PickClone.userControls
 
         private void Initialize()
         {
-            settings = Settings.Load();
-     
-            rdbMaxArea.IsChecked = settings.SelectionMethod == SelectionMethod.biggest;
+            Settings.Instance.Load();
+
+            rdbMaxArea.IsChecked = Settings.Instance.SelectionMethod == SelectionMethod.biggest;
             rdbRandom.IsChecked = !rdbMaxArea.IsChecked;
-            txtCnt.DataContext = settings;
+            txtCnt.DataContext = Settings.Instance;
         }
 
         public void OnNavigateTo(Stage stage)
@@ -57,15 +56,14 @@ namespace PickClone.userControls
             txtInfo.Foreground = hasError ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Black);
         }
 
-        private void btnSave_Click(object sender, RoutedEventArgs e)
+        private void btnConfirm_Click(object sender, RoutedEventArgs e)
         {
             bool bok = CheckSettings();
             if (!bok)
                 return;
             //settings.cloneCnt = int.Parse(txtCnt.Text);
-            settings.SelectionMethod = (bool)rdbMaxArea.IsChecked ? SelectionMethod.biggest : SelectionMethod.random;
-            settings.Save();
-            
+            Settings.Instance.SelectionMethod = (bool)rdbMaxArea.IsChecked ? SelectionMethod.biggest : SelectionMethod.random;
+            Settings.Instance.Save();
         }
     }
 }

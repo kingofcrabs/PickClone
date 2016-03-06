@@ -58,6 +58,7 @@
     </ApplicationDefinition>
     <Compile Include="Calibration.cs" />
     <Compile Include="CloneInfo.cs" />
+    <Compile Include="FilterProcessor.cs" />
     <Compile Include="Interprocess.cs" />
     <Compile Include="ThridPartyControl\Block.xaml.cs" />
     <Compile Include="ThridPartyControl\LoadingAnimation.xaml.cs" />

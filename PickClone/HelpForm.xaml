@@ -10,7 +10,7 @@
                 <Setter Property="FontSize" Value="12" />
             </Style>
         </Grid.Resources>
-        <Label  Content="© 2014-2015 盈开生物，保留所有权利" Height="32" HorizontalAlignment="Left" Margin="21,62,0,0" Name="label1" VerticalAlignment="Top" Width="327" />
+        <Label  Content="© 2014-2016 盈开生物，保留所有权利" Height="32" HorizontalAlignment="Left" Margin="21,62,0,0" Name="label1" VerticalAlignment="Top" Width="327" />
         <Label  Content="" Height="29" HorizontalAlignment="Left" Margin="21,27,0,0" Name="lblDescription" VerticalAlignment="Top" Width="349" />
     </Grid>
 </Window>

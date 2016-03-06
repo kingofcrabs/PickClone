@@ -46,7 +46,7 @@
                 <Label Content="提示：" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
                 <TextBox Name="txtInfo" IsReadOnly="True" Margin="0,30,0,10" VerticalAlignment="Stretch" />
             </Grid>
-            <Button Content="保存" Name="btnSave" Grid.Column="1" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Width="100" Height="32" Click="btnSave_Click"/>
+            <Button Content="确定" Name="btnConfirm" Grid.Column="1" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Width="100" Height="32" Click="btnConfirm_Click"/>
 
 
         </Grid>
