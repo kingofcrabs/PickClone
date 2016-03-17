@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TestHSV;
 
 namespace PickClone.userControls
 {
@@ -33,6 +34,28 @@ namespace PickClone.userControls
             rdbMaxArea.IsChecked = Settings.Instance.SelectionMethod == SelectionMethod.biggest;
             rdbRandom.IsChecked = !rdbMaxArea.IsChecked;
             txtCnt.DataContext = Settings.Instance;
+            hsvGrid.Children.Add(new ColorWheel());
+            hsvGrid.MouseEnter += hsvGrid_MouseEnter;
+            hsvGrid.MouseLeave += hsvGrid_MouseLeave;
+            hsvGrid.MouseLeftButtonUp += hsvGrid_MouseLeftButtonUp;
+        }
+
+        void hsvGrid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Point pt = e.GetPosition(hsvGrid);
+            ColorWheel colorWheel = (ColorWheel)hsvGrid.Children[0];
+            Brush brush = new SolidColorBrush(colorWheel.GetColor(pt));
+            //ColorGrid.Background = brush;
+        }
+
+        void hsvGrid_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Cursor = Cursors.Arrow;
+        }
+
+        void hsvGrid_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Cursor = Cursors.Cross;
         }
 
         public void OnNavigateTo(Stage stage)
