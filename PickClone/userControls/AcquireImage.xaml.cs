@@ -102,7 +102,7 @@ namespace PickClone.userControls
                 FilterProcessor filterProcessor = new FilterProcessor();
                 var pts = filterProcessor.GetInterestedPts(points, cnt); ;
                 resultCanvas.SetMarkFlags(pts);
-                UpdateBackgroundImage(sImgPath);
+                //UpdateBackgroundImage(sImgPath);
                 GenerateWorklist(pts, refPositions);
             }
             var timeSpan = DateTime.Now - startTime;
@@ -152,16 +152,10 @@ namespace PickClone.userControls
         
         #region ui helper
 
-        private void UpdateBackgroundImage(string markedImageFile)
+        private void UpdateBackgroundImage(string sImage)
         {
-            var imgSource = ImageHelper.BitmapFromFile(markedImageFile);
-            ImageBrush imgBrush = new ImageBrush();
-            imgBrush.ImageSource = imgSource;
-            imgBrush.Stretch = Stretch.Uniform;
-            imgBrush.AlignmentX = AlignmentX.Left;
-            imgBrush.AlignmentY = AlignmentY.Top;
-            resultCanvas.Background = imgBrush;
-            resultCanvas.ImageSize = new System.Windows.Size(imgSource.Width, imgSource.Height);
+            System.Drawing.Bitmap latestImage = ImageHelper.LoadLatestImage(sImage);
+            resultCanvas.UpdateBackGroundImage(latestImage);
         }
 
 

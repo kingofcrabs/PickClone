@@ -1,6 +1,7 @@
 ﻿using EngineDll;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -124,6 +125,27 @@ namespace PickClone
 
         public System.Windows.Size ImageSize { get; set; }
 
-      
+
+
+        
+        public void UpdateBackGroundImage(System.Drawing.Bitmap bitmap)
+        {
+            BitmapImage bitmapImage;
+            System.Drawing.Bitmap cloneBitmpa = (System.Drawing.Bitmap)bitmap.Clone();
+            using(MemoryStream memory = new MemoryStream())
+            {
+                cloneBitmpa.Save(memory, ImageFormat.Png);
+                memory.Position = 0;
+                bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+            }
+            ImageBrush imgBrush = new ImageBrush();
+            imgBrush.ImageSource = bitmapImage;
+            imgBrush.Stretch = Stretch.Uniform;
+            Background = imgBrush;
+        }
     }
 }

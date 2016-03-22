@@ -15,16 +15,25 @@ namespace PickClone
 {
     class ImageHelper
     {
-        public static BitmapImage BitmapFromFile(string source)
-        {
-            var bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.UriSource = new Uri(source);
-            bitmap.CacheOption = BitmapCacheOption.OnLoad;
-            bitmap.EndInit();
-            return bitmap;
-        }
 
+
+        static public Bitmap LoadLatestImage(string testImagePath)
+        {
+            bool bUseTestImage = bool.Parse(ConfigurationManager.AppSettings["useTestImage"]);
+            Bitmap img;
+            string s = FolderHelper.GetLatestImagePath();
+            if (bUseTestImage)
+                s = testImagePath;
+
+            if (!File.Exists(s))
+                throw new Exception("未能采集到图片！");
+
+            using (var bmpTemp = new Bitmap(s))
+            {
+                img = new Bitmap(bmpTemp);
+            }
+            return img;
+        }
         public static string ImagePath { get; set; }
     }
 
@@ -140,9 +149,6 @@ namespace PickClone
             string s = GetLatestImagePathInner();
             if (bUseTestImage)
                 s = GetTestImagePath();
-
-            if (!File.Exists(s))
-                throw new Exception("未能采集到图片！");
             return s;
         }
 

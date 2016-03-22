@@ -64,7 +64,7 @@ namespace Do3Acquier
 
         private bool CheckCameraNames(List<string> sCameraNames)
         {
-            return sCameraNames.Contains("USB2_CMOS_5M_F@CD501000021");
+            return sCameraNames.Contains("USB2_CMOS_5M_F@CD501000253");
         }
 
         private int GetIndex(int id)
