@@ -103,13 +103,15 @@ namespace PickClone
             {
                 usableHeight = this.ActualHeight / (realRatio / screenRatio);
                 usableWidth = this.ActualWidth;
+                this.Height = usableHeight;
             }
             else //y方向占满
             {
                 usableWidth = this.ActualWidth / (screenRatio / realRatio);
                 usableHeight = this.ActualHeight;
+                this.Width = usableWidth;
             }
-
+            
             return new Point((int)(pt.x / ImageSize.Width * usableWidth), (int)(pt.y / ImageSize.Height * usableHeight));
         }
 
@@ -145,6 +147,7 @@ namespace PickClone
             ImageBrush imgBrush = new ImageBrush();
             imgBrush.ImageSource = bitmapImage;
             imgBrush.Stretch = Stretch.Uniform;
+            ImageSize = new Size(bitmap.Size.Width,bitmap.Size.Height);
             Background = imgBrush;
         }
     }

@@ -102,7 +102,7 @@ namespace PickClone.userControls
                 FilterProcessor filterProcessor = new FilterProcessor();
                 var pts = filterProcessor.GetInterestedPts(points, cnt); ;
                 resultCanvas.SetMarkFlags(pts);
-                //UpdateBackgroundImage(sImgPath);
+                UpdateBackgroundImage(sImgPath);
                 GenerateWorklist(pts, refPositions);
             }
             var timeSpan = DateTime.Now - startTime;
