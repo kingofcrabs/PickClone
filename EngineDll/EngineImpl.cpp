@@ -79,10 +79,10 @@ void EngineImpl::GetCircleROI(Mat& src)
 	cvtColor(src, gray, CV_BGR2GRAY);
 	threshold(gray, gray, 200, 255, 0);
 #if _DEBUG
-	imwrite("f:\\temp\\output\\gray.jpg", gray);
+	imwrite("h:\\temp\\output\\gray.jpg", gray);
 #endif
 	vector<vector<cv::Point>> contours;
-	int minPts = 2000;
+	int minPts = 1000;
 	FindContours(gray, contours, minPts);
 	if (contours.size() == 0)
 	{
@@ -107,7 +107,7 @@ void EngineImpl::GetCircleROI(Mat& src)
 	{
 		drawContours(tmp, contours, index, Scalar(0, 255, 0), 2);
 	}
-	imwrite("f:\\temp\\output\\circleROI.jpg", tmp);
+	imwrite("h:\\temp\\output\\circleROI.jpg", tmp);
 #endif
 }
 
@@ -124,7 +124,7 @@ vector<vector<cv::Point>> EngineImpl::MarkAllContours(Mat& src,ConstrainSettings
 	cvtColor(tmp, gray, CV_BGR2GRAY);
 	threshold(gray, gray, 200, 255, 0);
 #if _DEBUG
-	imwrite("f:\\temp\\output\\threshold.jpg", gray);
+	imwrite("h:\\temp\\output\\threshold.jpg", gray);
 #endif
 	FindContours(gray, contours, minPts, maxPts);
 	for (int i = 0; i< contours.size(); i++)
@@ -185,7 +185,7 @@ vector<vector<cv::Point>> EngineImpl::MarkAllContoursGray(Mat& src, Mat& org)
 	//adaptiveThreshold(gray, gray, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY_INV, 11, 5);
 	threshold(gray, gray, 200, 255, 0);
 #if _DEBUG
-	imwrite("f:\\temp\\output\\adaptiveYellow.jpg", gray);
+	imwrite("h:\\temp\\output\\adaptiveYellow.jpg", gray);
 #endif
 	FindContours(gray, contours, minPts, maxPts);
 	for (int i = 0; i< contours.size(); i++)
@@ -194,7 +194,7 @@ vector<vector<cv::Point>> EngineImpl::MarkAllContoursGray(Mat& src, Mat& org)
 		
 	}
 #if _DEBUG
-	imwrite("f:\\temp\\output\\featuresYellow.jpg", tmp);
+	imwrite("h:\\temp\\output\\featuresYellow.jpg", tmp);
 #endif
 	return contours;
 }
@@ -214,7 +214,7 @@ void EngineImpl::FindRefPositions(int& top, int& left, int& bottom, int& right)
 	Mat src = img.clone();
 	//cvtColor(img, gray, CV_BGR2GRAY);
 #if _DEBUG
-	imwrite("f:\\temp\\output\\beforeRemovePetriDish.jpg", src);
+	imwrite("h:\\temp\\output\\beforeRemovePetriDish.jpg", src);
 #endif
 	//fill Petri dishe big contour with black
 	vector < vector<Point>> tmpContours;
@@ -224,7 +224,7 @@ void EngineImpl::FindRefPositions(int& top, int& left, int& bottom, int& right)
 	cvtColor(src, gray, CV_BGR2GRAY);
 	threshold(gray, gray, 200, 255, 0);
 #if _DEBUG
-	imwrite("f:\\temp\\output\\removePetriDish.jpg", gray);
+	imwrite("h:\\temp\\output\\removePetriDish.jpg", gray);
 #endif
 	vector<vector<cv::Point>> contours;
 	int minPts = 10;
