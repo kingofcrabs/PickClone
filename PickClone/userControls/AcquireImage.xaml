@@ -13,23 +13,30 @@
             <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Name="renderGrid">
-            <local:MarkCanvas x:Name="resultCanvas" Visibility="Hidden" Background="LightBlue"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <local:MarkCanvas x:Name="resultCanvas" Background="LightBlue" 
+                              VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
 
             </local:MarkCanvas>
 
-            <Canvas Name="loading" Visibility="Hidden">
-                <control:LoadingAnimation Canvas.Left="342" Canvas.Top="103" />
-            </Canvas>
+            
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width ="5*"/>
-                <ColumnDefinition Width ="1*"/>
+                <ColumnDefinition Width ="2*"/>
             </Grid.ColumnDefinitions>
-            <Label Content="提示：" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
-            <TextBox Name="txtInfo" Text="" HorizontalAlignment="Left" Height="59" Margin="10,31,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="763"/>
-            <Button Content="刷新" Name="btnRefresh" Click="btnRefresh_Click" Grid.Column="1" HorizontalAlignment="Left" Margin="5,31,0,0" VerticalAlignment="Top" Width="96" Height="32"/>
+            
+            <StackPanel Orientation="Vertical">
+                <Label Content="提示：" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
+                <TextBox Name="txtInfo" Text="" HorizontalAlignment="Stretch" Height="59" Margin="10,0,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"/>
+            </StackPanel>
+            
+           
+           <Button Content="刷新" Grid.Column="1" Name="btnRefresh" Click="btnRefresh_Click" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Width="96" Height="32"/>
 
+            
+         
+           
         </Grid>
     </Grid>
 </UserControl>

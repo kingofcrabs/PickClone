@@ -12,18 +12,30 @@ EngineImpl::EngineImpl()
 void  EngineImpl::FindContours(const cv::Mat& thresholdImg,
 	std::vector<std::vector<cv::Point>
 	>& contours,
-	int min, int max)
+	int min, int max, bool mustInBigCircle)
 {
 	std::vector< std::vector<cv::Point> > allContours;
 
 	cv::findContours(thresholdImg, allContours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
 	contours.clear();
+	auto bigCircleMassCenter = GetMassCenter(edgeContour);
 	for (size_t i = 0; i<allContours.size(); i++)
 	{
 		int contourSize = allContours[i].size();
+		auto ptCenter = GetMassCenter(allContours[i]);
+		
 		if (contourSize > min && contourSize < max)
 		{
-			contours.push_back(allContours[i]);
+			bool valid = true;
+			if (mustInBigCircle)
+			{
+				auto ptCenter = GetMassCenter(allContours[i]);
+				double distance = GetDistance(ptCenter.x, ptCenter.y, bigCircleMassCenter.x, bigCircleMassCenter.y);
+				if (distance > 320)
+					valid = false;
+			}
+			if (valid)
+				contours.push_back(allContours[i]);
 		}
 	}
 }
@@ -126,9 +138,10 @@ vector<vector<cv::Point>> EngineImpl::MarkAllContours(Mat& src,ConstrainSettings
 #if _DEBUG
 	imwrite("h:\\temp\\output\\threshold.jpg", gray);
 #endif
-	FindContours(gray, contours, minPts, maxPts);
+	FindContours(gray, contours, minPts, maxPts,true);
 	for (int i = 0; i< contours.size(); i++)
 	{
+		
 		drawContours(tmp, contours, i, Scalar(0, 0, 255));
 	}
 	imwrite(filePath2Save, tmp);

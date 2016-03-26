@@ -27,7 +27,18 @@ namespace PickClone.userControls
             InitializeComponent();
             CreateNamedPipeServer();
             imageAcquirer.onFinished += imageAcquirer_onFinished;
+            renderGrid.SizeChanged += renderGrid_SizeChanged;
         }
+
+       
+
+        void renderGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            resultCanvas.Resize();
+        }
+
+
+           
 
         void StartRealAcquire()
         {
@@ -191,14 +202,14 @@ namespace PickClone.userControls
 
         void HideLoadingImage()
         {
-            loading.Visibility = Visibility.Hidden;
-            resultCanvas.Visibility = System.Windows.Visibility.Visible;
+            //loading.Visibility = Visibility.Hidden;
+            //resultCanvas.Visibility = System.Windows.Visibility.Visible;
         }
 
         void ShowLoadingImage()
         {
-            loading.Visibility = Visibility.Visible;
-            resultCanvas.Visibility = System.Windows.Visibility.Hidden;
+            //loading.Visibility = Visibility.Visible;
+            //resultCanvas.Visibility = System.Windows.Visibility.Hidden;
             renderGrid.InvalidateVisual();
         }
 

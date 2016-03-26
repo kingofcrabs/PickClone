@@ -14,44 +14,52 @@ using System.Windows.Media.Imaging;
 
 namespace PickClone
 {
-    public class MarkCanvas : Canvas
+    public class MarkCanvas : Grid
     {
         List<MPoint> pts = null;
+        public delegate void NotifyPosition(Point pt);
+        public event NotifyPosition onCurrentPositionChanged;
         public MarkCanvas()
         {
-            //this.MouseLeftButtonUp += MarkCanvas_MouseLeftButtonUp;
+            this.MouseLeftButtonUp += MarkCanvas_MouseLeftButtonUp;
+        }
+
+        private void MarkCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            LeftButtonUp(e.GetPosition(this));
         }
 
         internal void LeftButtonUp(Point point)
         {
-            //ViewClone(point);
+            
+            ViewClone(point);
             this.InvalidateVisual();
         }
 
-        //private void ViewClone(Point point)
-        //{
-        //    if(pts == null || pts.Count == 0 )
-        //        return;
-            
-        //    for(int i = 0; i< pts.Count; i++)
-        //    {
-        //        pts[i].isCurrent = false;
-        //    }
-        //    Point ptInImage = Convert2BitmapCoord(point);
-        //    double minDistance = 10000;
-        //    int minIndex = 0;
-        //    for(int i = 0; i< pts.Count; i++)
-        //    {
-        //        double tmpDistance = GetDistance(ptInImage, pts[i]);
-        //        if(tmpDistance < minDistance)
-        //        {
-        //            minDistance = tmpDistance;
-        //            minIndex = i;
-        //        }
-        //    }
-        //    pts[minIndex].isCurrent = true;
-        //}
+        private void ViewClone(Point point)
+        {
+            if (pts == null || pts.Count == 0)
+                return;
 
+            for (int i = 0; i < pts.Count; i++)
+            {
+                pts[i].isCurrent = false;
+            }
+            Point ptInImage = Convert2BitmapCoord(point);
+            double minDistance = 10000;
+            int minIndex = 0;
+            for (int i = 0; i < pts.Count; i++)
+            {
+                double tmpDistance = GetDistance(ptInImage, pts[i]);
+                if (tmpDistance < minDistance)
+                {
+                    minDistance = tmpDistance;
+                    minIndex = i;
+                }
+            }
+            pts[minIndex].isCurrent = true;
+        }
+       
         private double GetDistance(Point ptInImage, MPoint mPoint)
         {
             int xDis = (int)(ptInImage.X - mPoint.x);
@@ -65,24 +73,35 @@ namespace PickClone
             if (pts == null)
                 return;
 
-            foreach(var pt in pts)
+            foreach (var pt in pts)
             {
-                DrawRect(pt,false,dc);
+                DrawRect(pt,  dc);
             }
         }
 
-        private void DrawRect(MPoint pt, bool isCurrent, System.Windows.Media.DrawingContext dc)
+        private void DrawRect(MPoint pt,  System.Windows.Media.DrawingContext dc)
         {
             Point ptUI = Convert2UICoord(pt);
             Brush brush = pt.isCurrent ? Brushes.Red : Brushes.DarkBlue;
             dc.DrawRectangle(null, new System.Windows.Media.Pen(brush, 1), GetBoundingRect(ptUI));
-             FormattedText text = new FormattedText(pt.ID.ToString(),
+            FormattedText text = new FormattedText(pt.ID.ToString(),
+            
             CultureInfo.CurrentCulture,
             FlowDirection.LeftToRight,
             new Typeface("SimSun"),
             18,
             Brushes.Black);
             dc.DrawText(text,ptUI);
+            if(pt.isCurrent)
+            {
+                FormattedText curPosition = new FormattedText(string.Format("x:{0},y:{1}", pt.x, pt.y), 
+                    CultureInfo.CurrentCulture,
+                    FlowDirection.LeftToRight,
+                    new Typeface("SimSun"),
+                    18,
+                    Brushes.Blue);
+                dc.DrawText(curPosition, new Point(ptUI.X, ptUI.Y + 20));
+            }
         }
 
         private Rect GetBoundingRect(Point ptUI)
@@ -95,7 +114,7 @@ namespace PickClone
 
         private Point Convert2UICoord(MPoint pt)
         {
-         
+
             double screenRatio = this.ActualWidth / this.ActualHeight;
             double realRatio = ImageSize.Width / ImageSize.Height;
             double usableHeight, usableWidth;
@@ -103,21 +122,32 @@ namespace PickClone
             {
                 usableHeight = this.ActualHeight / (realRatio / screenRatio);
                 usableWidth = this.ActualWidth;
-                this.Height = usableHeight;
             }
             else //y方向占满
             {
                 usableWidth = this.ActualWidth / (screenRatio / realRatio);
                 usableHeight = this.ActualHeight;
-                this.Width = usableWidth;
             }
-            
+
             return new Point((int)(pt.x / ImageSize.Width * usableWidth), (int)(pt.y / ImageSize.Height * usableHeight));
         }
 
         private Point Convert2BitmapCoord(Point pt)
         {
-            return new Point((int)(pt.X / this.ActualWidth * ImageSize.Width), (int)(pt.Y / this.ActualHeight * ImageSize.Height));
+            double screenRatio = this.ActualWidth / this.ActualHeight;
+            double realRatio = ImageSize.Width / ImageSize.Height;
+            double usableHeight, usableWidth;
+            if (realRatio > screenRatio)//x方向占满
+            {
+                usableHeight = this.ActualHeight / (realRatio / screenRatio);
+                usableWidth = this.ActualWidth;
+            }
+            else //y方向占满
+            {
+                usableWidth = this.ActualWidth / (screenRatio / realRatio);
+                usableHeight = this.ActualHeight;
+            }
+            return new Point((int)(pt.X / usableWidth * ImageSize.Width), (int)(pt.Y / usableHeight * ImageSize.Height));
         }
 
         internal void SetMarkFlags(List<EngineDll.MPoint> pts)
@@ -147,8 +177,38 @@ namespace PickClone
             ImageBrush imgBrush = new ImageBrush();
             imgBrush.ImageSource = bitmapImage;
             imgBrush.Stretch = Stretch.Uniform;
+
+            double screenRatio = this.ActualWidth / this.ActualHeight;
+            double realRatio = ImageSize.Width / ImageSize.Height;
+            if (realRatio > screenRatio)//x方向占满
+            {
+                imgBrush.Viewport = new Rect(0, 0, 1, realRatio / screenRatio);
+            }
+            else //y方向占满
+            {
+                imgBrush.Viewport = new Rect(0, 0, realRatio / screenRatio,1);
+            }
+
+            
             ImageSize = new Size(bitmap.Size.Width,bitmap.Size.Height);
             Background = imgBrush;
+            this.InvalidateVisual();
+        }
+
+        internal void Resize()
+        {
+            ImageBrush imgBrush = (ImageBrush)Background;
+            double screenRatio = this.ActualWidth / this.ActualHeight;
+            double realRatio = ImageSize.Width / ImageSize.Height;
+            if (realRatio > screenRatio)//x方向占满
+            {
+                imgBrush.Viewport = new Rect(0, 0, 1, realRatio / screenRatio);
+            }
+            else //y方向占满
+            {
+                imgBrush.Viewport = new Rect(0, 0, realRatio / screenRatio, 1);
+            }
+            this.InvalidateVisual();
         }
     }
 }
