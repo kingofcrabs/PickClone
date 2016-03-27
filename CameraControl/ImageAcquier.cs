@@ -207,5 +207,13 @@ namespace CameraControl
 
             return sCameraList;
         }
+
+        public bool IsInitialed
+        {
+            get
+            {
+                return bInitialized;
+            }
+        }
     }
 }
