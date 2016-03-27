@@ -3,7 +3,7 @@
 
 using namespace std;
 using namespace cv;
-
+static string dbgFolder = "d:\\temp\\";
 EngineImpl::EngineImpl()
 {
 
@@ -31,7 +31,7 @@ void  EngineImpl::FindContours(const cv::Mat& thresholdImg,
 			{
 				auto ptCenter = GetMassCenter(allContours[i]);
 				double distance = GetDistance(ptCenter.x, ptCenter.y, bigCircleMassCenter.x, bigCircleMassCenter.y);
-				if (distance > 320)
+				if (distance > 310)
 					valid = false;
 			}
 			if (valid)
@@ -91,7 +91,7 @@ void EngineImpl::GetCircleROI(Mat& src)
 	cvtColor(src, gray, CV_BGR2GRAY);
 	threshold(gray, gray, 200, 255, 0);
 #if _DEBUG
-	imwrite("h:\\temp\\output\\gray.jpg", gray);
+	imwrite(dbgFolder + "gray.jpg", gray);
 #endif
 	vector<vector<cv::Point>> contours;
 	int minPts = 1000;
@@ -119,7 +119,7 @@ void EngineImpl::GetCircleROI(Mat& src)
 	{
 		drawContours(tmp, contours, index, Scalar(0, 255, 0), 2);
 	}
-	imwrite("h:\\temp\\output\\circleROI.jpg", tmp);
+	imwrite(dbgFolder + "circleROI.jpg", tmp);
 #endif
 }
 
@@ -136,7 +136,7 @@ vector<vector<cv::Point>> EngineImpl::MarkAllContours(Mat& src,ConstrainSettings
 	cvtColor(tmp, gray, CV_BGR2GRAY);
 	threshold(gray, gray, 200, 255, 0);
 #if _DEBUG
-	imwrite("h:\\temp\\output\\threshold.jpg", gray);
+	imwrite(dbgFolder + "threshold.jpg", gray);
 #endif
 	FindContours(gray, contours, minPts, maxPts,true);
 	for (int i = 0; i< contours.size(); i++)
@@ -198,7 +198,7 @@ vector<vector<cv::Point>> EngineImpl::MarkAllContoursGray(Mat& src, Mat& org)
 	//adaptiveThreshold(gray, gray, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY_INV, 11, 5);
 	threshold(gray, gray, 200, 255, 0);
 #if _DEBUG
-	imwrite("h:\\temp\\output\\adaptiveYellow.jpg", gray);
+	imwrite(dbgFolder + "adaptiveYellow.jpg", gray);
 #endif
 	FindContours(gray, contours, minPts, maxPts);
 	for (int i = 0; i< contours.size(); i++)
@@ -207,9 +207,22 @@ vector<vector<cv::Point>> EngineImpl::MarkAllContoursGray(Mat& src, Mat& org)
 		
 	}
 #if _DEBUG
-	imwrite("h:\\temp\\output\\featuresYellow.jpg", tmp);
+	imwrite(dbgFolder + "featuresYellow.jpg", tmp);
 #endif
 	return contours;
+}
+
+
+void EngineImpl::Rotate90(cv::Mat &matImage, bool cw){
+	//1=CW, 2=CCW, 3=180
+	if (cw){
+		transpose(matImage, matImage);
+		flip(matImage, matImage, 1); //transpose+flip(1)=CW
+	}
+	else {
+		transpose(matImage, matImage);
+		flip(matImage, matImage, 0); //transpose+flip(0)=CCW     
+	}
 }
 
 
@@ -218,6 +231,11 @@ void EngineImpl::Load(string sFile)
 	int index = sFile.rfind("\\Data");
 	workingFolder = sFile.substr(0, index);
 	img = imread(sFile);
+	pyrDown(img, img);
+	Rect roi(270, 0, img.cols - 540, img.rows);
+	img = img(roi);
+	Rotate90(img, false);
+	imwrite(sFile, img);
 	GetCircleROI(img);
 }
 
@@ -227,7 +245,7 @@ void EngineImpl::FindRefPositions(int& top, int& left, int& bottom, int& right)
 	Mat src = img.clone();
 	//cvtColor(img, gray, CV_BGR2GRAY);
 #if _DEBUG
-	imwrite("h:\\temp\\output\\beforeRemovePetriDish.jpg", src);
+	imwrite(dbgFolder + "beforeRemovePetriDish.jpg", src);
 #endif
 	//fill Petri dishe big contour with black
 	vector < vector<Point>> tmpContours;
@@ -237,7 +255,7 @@ void EngineImpl::FindRefPositions(int& top, int& left, int& bottom, int& right)
 	cvtColor(src, gray, CV_BGR2GRAY);
 	threshold(gray, gray, 200, 255, 0);
 #if _DEBUG
-	imwrite("h:\\temp\\output\\removePetriDish.jpg", gray);
+	imwrite(dbgFolder + "removePetriDish.jpg", gray);
 #endif
 	vector<vector<cv::Point>> contours;
 	int minPts = 10;

@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <physicalRef>
-    <top>186</top>
-    <bottom>1058</bottom>
-    <left>1427</left>
-    <right>2300</right>
+    <left>186</left>
+    <top>1427</top>
+    <right>1058</right>
+    <bottom>2300</bottom>
   </physicalRef>
   <SelectionMethod>biggest</SelectionMethod>
   <CloneCnt>50</CloneCnt>

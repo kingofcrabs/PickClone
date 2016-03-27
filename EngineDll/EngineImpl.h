@@ -23,6 +23,7 @@ public:
 	void FindCalibPositions(int& top, int& left, int& bottom, int& right);
 	void FindRefPositions(int& top, int& left, int& bottom, int& right);
 private:
+	void Rotate90(cv::Mat &matImage, bool cw);
 	cv::Point GetMassCenter(std::vector<cv::Point>& pts);
 	void GetCircleROI(cv::Mat& src);
 	int GetWidth(std::vector<cv::Point> pts);

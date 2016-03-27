@@ -8,14 +8,30 @@ using System.Text;
 
 namespace PickClone
 {
-    class Calibration
+    public class Calibration
     {
         FourPoints pixelsRef;
         FourPoints physicalRef;
-        public Calibration()
+        static Calibration instance = null;
+        static public Calibration Instance
         {
+            get
+            {
+                if(instance == null)
+                {
+                    instance = new Calibration();
+                }
+                return instance;
+             }
+        }
+
+        private Calibration()
+        {
+            Settings.Instance.Load();
             physicalRef = Settings.Instance.PhysicalRef;
         }
+           
+       
 
         public void SetRefPixels(RefPositions refPos)
         {

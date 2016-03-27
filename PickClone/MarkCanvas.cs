@@ -17,8 +17,7 @@ namespace PickClone
     public class MarkCanvas : Grid
     {
         List<MPoint> pts = null;
-        public delegate void NotifyPosition(Point pt);
-        public event NotifyPosition onCurrentPositionChanged;
+     
         public MarkCanvas()
         {
             this.MouseLeftButtonUp += MarkCanvas_MouseLeftButtonUp;
@@ -94,7 +93,9 @@ namespace PickClone
             dc.DrawText(text,ptUI);
             if(pt.isCurrent)
             {
-                FormattedText curPosition = new FormattedText(string.Format("x:{0},y:{1}", pt.x, pt.y), 
+                
+                FormattedText curPosition = new FormattedText(string.Format("x:{0},y:{1}",
+                    Calibration.Instance.ConvertX(pt.x), Calibration.Instance.ConvertY(pt.y)), 
                     CultureInfo.CurrentCulture,
                     FlowDirection.LeftToRight,
                     new Typeface("SimSun"),

@@ -37,8 +37,6 @@ namespace Do3Acquier
             if (bInitialized)
                 return;
             m_iCameraIDs = new int[neededCameraCnt];
-            //m_sCameraExpectedNameList = new string[] { "DSCD501000068", 
-            //                                           "DSCD501000064" };    
             Stop();
             m_sCameraRealNameList = GetCameraList().ToArray();
             bool bok = CheckCameraNames(m_sCameraRealNameList.ToList());
@@ -52,19 +50,32 @@ namespace Do3Acquier
                 emDSCameraStatus status = Camera.CameraInit(psub, sName, IntPtr.Zero, ref m_iCameraIDs[i]);
                 if (status != emDSCameraStatus.STATUS_OK)
                     throw new Exception(string.Format("无法初始化相机，原因是: {0}", status.ToString()));
+               
                 Camera.CameraSetOnceWB(m_iCameraIDs[i]);
-                //Camera.CameraSetMirror(m_iCameraIDs[i], emDSMirrorDirection.MIRROR_DIRECTION_HORIZONTAL, true);
                 int resIndex = GetIndex(m_iCameraIDs[i]);
-                //Camera.CameraSetImageSize(m_iCameraID, true, 0, 0, 1280, 960,1);
                 Camera.CameraSetImageSizeSel(m_iCameraIDs[i], resIndex, true);
+                Camera.CameraSetAnalogGain(m_iCameraIDs[i], 0.8f);
                 Camera.CameraPlay(m_iCameraIDs[i]);
             }
+            Thread.Sleep(4000);
             bInitialized = true;
         }
 
         private bool CheckCameraNames(List<string> sCameraNames)
         {
-            return sCameraNames.Contains("USB2_CMOS_5M_F@CD501000253");
+            List<string> allowedCameraNames = new List<string>(){
+                "CD501000253"
+            };
+            foreach(string sName in sCameraNames)
+            {
+                int pos = sName.IndexOf("@");
+                if (pos == -1)
+                    return false;
+                string sub = sName.Substring(pos + 1);
+                if (!allowedCameraNames.Contains(sub))
+                    return false;
+            }
+            return true;
         }
 
         private int GetIndex(int id)
@@ -91,9 +102,8 @@ namespace Do3Acquier
 
             for (int i = 0; i < capabilites.Count; i++)
             {
-                if (capabilites[i].IndexOf("1280") != -1)
+                if (capabilites[i].IndexOf("2592") != -1)
                     return i;
-
             }
             throw new Exception("相机不支持该分辨率!");
         }
@@ -131,11 +141,6 @@ namespace Do3Acquier
                     onFinished(ex.Message);
                 return;
             }
-            Thread.Sleep(1000);
-            //if (!IsRightOrder(m_sCameraRealNameList[cameraID - 1], m_sCameraExpectedNameList[cameraID - 1]))
-            //{
-            //    cameraID = 3 - cameraID;
-            //}
             if (File.Exists(sFile))
                 File.Delete(sFile);
             string sOrgFile = sFile;
@@ -144,7 +149,7 @@ namespace Do3Acquier
             emDSCameraStatus status = Camera.CameraCaptureFile(cameraID, sFile, (byte)emDSFileType.FILE_JPG, 100);
             while (true)
             {
-                Thread.Sleep(50);
+                Thread.Sleep(200);
                 if (File.Exists(sOrgFile))
                     break;
             }

@@ -54,7 +54,7 @@ namespace PickClone.userControls
         private void StartAcquire()
         {
             EnableButtons(false);
-            SetInfo("开始采集",false);
+            SetInfo("开始采集，第一次初始化较慢，请耐心等待。",false);
             //bool bUseTestImage = bool.Parse(ConfigurationManager.AppSettings["useTestImage"]);
             if (!ConfigValues.UseTestImage)
             {
@@ -73,12 +73,18 @@ namespace PickClone.userControls
             }
         }
 
-        private void GenerateWorklist(List<MPoint> pts, RefPositions refPositions)
+        private void GenerateWorklist(List<MPoint> pts)
         {
-            Worklist worklist = new Worklist(refPositions);
-            var strs = worklist.Generate(pts);
-            string sFile = FolderHelper.GetOutputFolder() + "latest.gwl";
-            File.WriteAllLines(sFile, strs);
+            Worklist worklist = new Worklist();
+            var strLists = worklist.Generate(pts);
+            string cntFile = FolderHelper.GetOutputFolder() + "count.txt";
+            File.WriteAllText(cntFile,strLists.Count.ToString());
+            for (int i = 0; i < strLists.Count; i++ )
+            {
+                var strs = strLists[i];
+                string sFile = FolderHelper.GetOutputFolder() + string.Format("{0}.gwl",i+1);
+                File.WriteAllLines(sFile, strs);
+            }
         }
 
         private List<MPoint> GetFirstNPts(MPoint[] points, int retCnt)
@@ -108,13 +114,14 @@ namespace PickClone.userControls
             int cnt = 0;
             RefPositions refPositions = new RefPositions();
             string markedImageFile = iEngine.MarkClones(new ConstrainSettings(10, 200), refPositions, ref cnt, ref points);
+            Calibration.Instance.SetRefPixels(refPositions);
             if (cnt > 0)
             {
                 FilterProcessor filterProcessor = new FilterProcessor();
                 var pts = filterProcessor.GetInterestedPts(points, cnt); ;
                 resultCanvas.SetMarkFlags(pts);
                 UpdateBackgroundImage(sImgPath);
-                GenerateWorklist(pts, refPositions);
+                GenerateWorklist(pts);
             }
             var timeSpan = DateTime.Now - startTime;
             int seconds = (int)timeSpan.TotalSeconds;
@@ -124,10 +131,9 @@ namespace PickClone.userControls
         
         void imageAcquirer_onFinished(string errMsg)
         {
-            this.Dispatcher.BeginInvoke(
+            this.Dispatcher.Invoke(
              (Action)delegate()
              {
-                 HideLoadingImage();
                  if (errMsg != "")
                  {
                      resultCanvas.Children.Clear();
@@ -135,13 +141,14 @@ namespace PickClone.userControls
                      return;
                  }
                  RefreshImage();
+                 resultCanvas.Resize();
                  SetInfo("开始分析",false);
                  DoEvents();
-                 Thread.Sleep(100);
-                 DoEvents();
                  Analysis();
+                 resultCanvas.Resize();
                  EnableButtons(true);
              });
+            
         }
         #region refresh helper
         [SecurityPermissionAttribute(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
@@ -200,20 +207,8 @@ namespace PickClone.userControls
             txtInfo.Foreground = color;
         }
 
-        void HideLoadingImage()
-        {
-            //loading.Visibility = Visibility.Hidden;
-            //resultCanvas.Visibility = System.Windows.Visibility.Visible;
-        }
-
-        void ShowLoadingImage()
-        {
-            //loading.Visibility = Visibility.Visible;
-            //resultCanvas.Visibility = System.Windows.Visibility.Hidden;
-            renderGrid.InvalidateVisual();
-        }
-
-
+     
+        
         #endregion
 
         public void OnNavigateTo(Stage stage)
@@ -238,14 +233,12 @@ namespace PickClone.userControls
             //StartAcquire();
             if(sCommand == "s")
             {
-                ShowLoadingImage();
-                
                 StartAcquire();
             }
 
             if(sCommand == "a")
             {
-                ShowLoadingImage();
+               
             }
         }
         #endregion
