@@ -15,8 +15,6 @@ namespace PickClone
 {
     class ImageHelper
     {
-
-
         static public Bitmap LoadLatestImage(string testImagePath)
         {
             bool bUseTestImage = bool.Parse(ConfigurationManager.AppSettings["useTestImage"]);

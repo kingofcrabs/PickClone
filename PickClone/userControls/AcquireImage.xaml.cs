@@ -1,4 +1,4 @@
-﻿using Do3Acquier;
+﻿using CameraControl;
 using EngineDll;
 using System;
 using System.Collections.Generic;
@@ -54,7 +54,8 @@ namespace PickClone.userControls
         private void StartAcquire()
         {
             EnableButtons(false);
-            SetInfo("开始采集，第一次初始化较慢，请耐心等待。",false);
+            string extraHint = imageAcquirer.IsInitialed ? "" : "第一次初始化较慢，";
+            SetInfo(string.Format("开始采集，{0}请耐心等待。",extraHint),false);
             //bool bUseTestImage = bool.Parse(ConfigurationManager.AppSettings["useTestImage"]);
             if (!ConfigValues.UseTestImage)
             {

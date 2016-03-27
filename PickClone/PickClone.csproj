@@ -144,9 +144,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Do3Acquier\Do3Acquier.csproj">
+    <ProjectReference Include="..\CameraControl\CameraControl.csproj">
       <Project>{ebce2ab7-09ea-490a-93e1-e141ba40e68d}</Project>
-      <Name>Do3Acquier</Name>
+      <Name>CameraControl</Name>
     </ProjectReference>
     <ProjectReference Include="..\EngineDll\EngineDll.vcxproj">
       <Project>{9f46951f-d766-4801-9aed-44dc5f017eb9}</Project>
