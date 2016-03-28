@@ -19,7 +19,7 @@ class EngineImpl
 public:
 	void Load(std::string sFile);
 	EngineImpl();
-	std::string MarkClones(ConstrainSettings^ constrains, std::vector<cv::Point>& centers);
+	std::string MarkClones(ConstrainSettings^ constrains, std::vector<cv::Point>& centers,cv::Point ptMass);
 	void FindCalibPositions(int& top, int& left, int& bottom, int& right);
 	void FindRefPositions(int& top, int& left, int& bottom, int& right);
 private:
@@ -29,12 +29,14 @@ private:
 	int GetWidth(std::vector<cv::Point> pts);
 	void RemovePtsNotInROI(cv::Mat& src, CvPoint ptMass);
 	
-	void  FindContours(const cv::Mat& thresholdImg, std::vector<std::vector<cv::Point>>& contours, int min, int max = 999999, bool mustInBigCircle = false);
+	void  FindContours(const cv::Mat& thresholdImg, std::vector<std::vector<cv::Point>>& contours, int min, int max = 999999);
 	double  GetDistance(double x1, double y1, double x2, double y2);
 	std::vector<std::vector<cv::Point>> MarkAllContoursGray(cv::Mat& src, cv::Mat& org);
 	std::vector<std::vector<cv::Point>> MarkAllContours(cv::Mat& src,ConstrainSettings^ constrainSettings, std::string filePath2Save);
 	std::string workingFolder;
 	cv::Mat img;
-	std::vector<cv::Point> edgeContour;
+	//std::vector<cv::Point> edgeContour;
+
+	cv::Point ptMass;
 };
 

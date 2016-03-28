@@ -4,6 +4,8 @@
 using namespace std;
 using namespace cv;
 static string dbgFolder = "d:\\temp\\";
+static int innderRadius = 310;
+static int outterRadius = 415;
 EngineImpl::EngineImpl()
 {
 
@@ -12,30 +14,19 @@ EngineImpl::EngineImpl()
 void  EngineImpl::FindContours(const cv::Mat& thresholdImg,
 	std::vector<std::vector<cv::Point>
 	>& contours,
-	int min, int max, bool mustInBigCircle)
+	int min, int max)
 {
 	std::vector< std::vector<cv::Point> > allContours;
 
 	cv::findContours(thresholdImg, allContours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
 	contours.clear();
-	auto bigCircleMassCenter = GetMassCenter(edgeContour);
 	for (size_t i = 0; i<allContours.size(); i++)
 	{
 		int contourSize = allContours[i].size();
-		auto ptCenter = GetMassCenter(allContours[i]);
 		
 		if (contourSize > min && contourSize < max)
 		{
-			bool valid = true;
-			if (mustInBigCircle)
-			{
-				auto ptCenter = GetMassCenter(allContours[i]);
-				double distance = GetDistance(ptCenter.x, ptCenter.y, bigCircleMassCenter.x, bigCircleMassCenter.y);
-				if (distance > 310)
-					valid = false;
-			}
-			if (valid)
-				contours.push_back(allContours[i]);
+			contours.push_back(allContours[i]);
 		}
 	}
 }
@@ -65,7 +56,7 @@ void EngineImpl::RemovePtsNotInROI(Mat& src, CvPoint ptMass)
 		uchar *data = src.ptr(y);
 		for (int x = 0; x < width; x++)
 		{
-			if (GetDistance(x, y, ptMass.x, ptMass.y) > 660)
+			if (GetDistance(x, y, ptMass.x, ptMass.y) > innderRadius)
 			{
 				int xStart = x*channels;
 				for (int i = 0; i< channels; i++)
@@ -111,7 +102,7 @@ void EngineImpl::GetCircleROI(Mat& src)
 			index = i;
 		}
 	}
-	edgeContour = contours[index];
+	//edgeContour = contours[index];
 #if _DEBUG	
 	Mat tmp = src.clone();
 
@@ -131,14 +122,13 @@ vector<vector<cv::Point>> EngineImpl::MarkAllContours(Mat& src,ConstrainSettings
 	int minPts = constrainSettings->minSize;
 	int maxPts = constrainSettings->maxSize;
 	Mat gray;
-	auto pt = GetMassCenter(edgeContour);
-	RemovePtsNotInROI(tmp, pt);
+	RemovePtsNotInROI(tmp, ptMass);
 	cvtColor(tmp, gray, CV_BGR2GRAY);
 	threshold(gray, gray, 200, 255, 0);
 #if _DEBUG
 	imwrite(dbgFolder + "threshold.jpg", gray);
 #endif
-	FindContours(gray, contours, minPts, maxPts,true);
+	FindContours(gray, contours, minPts, maxPts);
 	for (int i = 0; i< contours.size(); i++)
 	{
 		
@@ -149,8 +139,10 @@ vector<vector<cv::Point>> EngineImpl::MarkAllContours(Mat& src,ConstrainSettings
 }
 
 
-string EngineImpl::MarkClones(ConstrainSettings^ constrains, std::vector<cv::Point>& centers)
+string EngineImpl::MarkClones(ConstrainSettings^ constrains, std::vector<cv::Point>& centers, 
+	cv::Point ptMass)
 {
+	this->ptMass = ptMass;
 	string resultFile = workingFolder + "\\output\\clones.jpg";
 	auto contours = MarkAllContours(img, constrains, resultFile);
 	sort(contours.begin(), contours.end(), [](const vector<cv::Point> & a, const vector<cv::Point> & b) -> bool
@@ -236,7 +228,7 @@ void EngineImpl::Load(string sFile)
 	img = img(roi);
 	Rotate90(img, false);
 	imwrite(sFile, img);
-	GetCircleROI(img);
+	//GetCircleROI(img);
 }
 
 void EngineImpl::FindRefPositions(int& top, int& left, int& bottom, int& right)
@@ -247,11 +239,7 @@ void EngineImpl::FindRefPositions(int& top, int& left, int& bottom, int& right)
 #if _DEBUG
 	imwrite(dbgFolder + "beforeRemovePetriDish.jpg", src);
 #endif
-	//fill Petri dishe big contour with black
-	vector < vector<Point>> tmpContours;
-	tmpContours.push_back(edgeContour);
-	drawContours(src, tmpContours,0, Scalar(0, 0, 0), 5);
-	drawContours(src, tmpContours, 0, Scalar(0, 0, 0), CV_FILLED);
+	circle(src, Point(src.cols / 2, src.rows / 2), outterRadius, Scalar(0,0, 0),CV_FILLED);
 	cvtColor(src, gray, CV_BGR2GRAY);
 	threshold(gray, gray, 200, 255, 0);
 #if _DEBUG

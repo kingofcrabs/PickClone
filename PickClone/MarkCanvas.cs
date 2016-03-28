@@ -198,6 +198,8 @@ namespace PickClone
 
         internal void Resize()
         {
+            if (Background is SolidColorBrush)
+                return;
             ImageBrush imgBrush = (ImageBrush)Background;
             double screenRatio = this.ActualWidth / this.ActualHeight;
             double realRatio = ImageSize.Width / ImageSize.Height;

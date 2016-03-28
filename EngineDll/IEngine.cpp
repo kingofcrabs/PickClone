@@ -36,7 +36,10 @@ namespace EngineDll
 
 		//System::String^ MyString = gcnew System::String(Model.c_str());
 		std::vector<cv::Point> pts;
-		std::string resFile = m_EngineImpl->MarkClones(ConstrainSettings, pts);
+		cv::Point ptLeftTop = cv::Point(left, top);
+		cv::Point ptRightBottom = cv::Point(right, bottom);
+		cv::Point ptMass = cvPoint((left + right) / 2, (top + bottom) / 2);
+		std::string resFile = m_EngineImpl->MarkClones(ConstrainSettings, pts, ptMass);
 		int i = 0;
 		actualCnt = pts.size();
 		
