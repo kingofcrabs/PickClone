@@ -28,6 +28,8 @@ namespace PickClone.userControls
             CreateNamedPipeServer();
             imageAcquirer.onFinished += imageAcquirer_onFinished;
             renderGrid.SizeChanged += renderGrid_SizeChanged;
+            Settings.Instance.Load();
+            sliderExposureTime.Value = Settings.Instance.ExposureTime;
         }
 
        
@@ -56,9 +58,11 @@ namespace PickClone.userControls
             EnableButtons(false);
             string extraHint = imageAcquirer.IsInitialed ? "" : "第一次初始化较慢，";
             SetInfo(string.Format("开始采集，{0}请耐心等待。",extraHint),false);
+            resultCanvas.Markers = null;
             //bool bUseTestImage = bool.Parse(ConfigurationManager.AppSettings["useTestImage"]);
             if (!ConfigValues.UseTestImage)
             {
+                imageAcquirer.SetExposureTime(Settings.Instance.ExposureTime);
                 StartRealAcquire();
             }
             else
@@ -69,7 +73,7 @@ namespace PickClone.userControls
                     Thread.Sleep(100);
                     DoEvents();
                 }
-                resultCanvas.SetMarkFlags(null);
+                resultCanvas.Markers = null;
                 imageAcquirer_onFinished("");
             }
         }
@@ -110,17 +114,30 @@ namespace PickClone.userControls
             startTime = DateTime.Now;
             IEngine iEngine = new IEngine();
             string sImgPath = FolderHelper.GetLatestImagePath();
+#if DEBUG
+            File.Copy(sImgPath, FolderHelper.GetDataFolder() + "test.jpg",true);
+#endif
             iEngine.Load(sImgPath);
             MPoint[] points = new MPoint[200];
             int cnt = 0;
             RefPositions refPositions = new RefPositions();
             string markedImageFile = iEngine.MarkClones(new ConstrainSettings(10, 200), refPositions, ref cnt, ref points);
+            try
+            {
+                CheckRefPoints(refPositions);
+            }
+            catch(Exception ex)
+            {
+                SetInfo(ex.Message);
+                return;
+            }
+
             Calibration.Instance.SetRefPixels(refPositions);
             if (cnt > 0)
             {
                 FilterProcessor filterProcessor = new FilterProcessor();
                 var pts = filterProcessor.GetInterestedPts(points, cnt); ;
-                resultCanvas.SetMarkFlags(pts);
+                resultCanvas.Markers = pts;
                 UpdateBackgroundImage(sImgPath);
                 GenerateWorklist(pts);
             }
@@ -129,12 +146,25 @@ namespace PickClone.userControls
             SetInfo(string.Format("找到{0}个克隆。用时:{1}秒", cnt, seconds), false);
         }
 
+        private void CheckRefPoints(RefPositions refPositions)
+        {
+            bool numInvalid = (refPositions.bottom == refPositions.top || refPositions.left == refPositions.right);//check validity
+            int width = refPositions.right - refPositions.left;
+            bool invalidWidth = ( Math.Abs(width - 1300) > 50);
+            int height = refPositions.bottom - refPositions.top;
+            bool invalidHeight = (Math.Abs(height - 1300) > 50);
+            if (invalidHeight || invalidWidth || numInvalid)
+                throw new Exception("未能找到参考点！");
+                
+        }
+
         
         void imageAcquirer_onFinished(string errMsg)
         {
             this.Dispatcher.Invoke(
              (Action)delegate()
              {
+                 EnableButtons(true);
                  if (errMsg != "")
                  {
                      resultCanvas.Children.Clear();
@@ -147,7 +177,7 @@ namespace PickClone.userControls
                  DoEvents();
                  Analysis();
                  resultCanvas.Resize();
-                 EnableButtons(true);
+                 
              });
             
         }
@@ -247,6 +277,11 @@ namespace PickClone.userControls
         private void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
             StartAcquire();
+        }
+
+        private void sliderExposureTime_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Settings.Instance.ExposureTime = (ulong)sliderExposureTime.Value;
         }
 
 

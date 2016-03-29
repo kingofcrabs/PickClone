@@ -22,6 +22,8 @@ namespace CameraControl
         public  delegate  void Finished(string errMsg);
         public event Finished onFinished;
         static int frames = 0;
+        ulong exposureTime = 140;
+        ulong tenK = 10000;
         readonly static int neededCameraCnt = 1;
         public static int SnapThreadCallback(int m_iCam, ref Byte pbyBuffer, ref tDSFrameInfo sFrInfo)
         {
@@ -43,20 +45,23 @@ namespace CameraControl
             {
                 throw new Exception("程序未注册！");
             }
+            
             for( int i = 0; i< neededCameraCnt; i++)
             {
                 string sName = m_sCameraRealNameList[i];
                 emDSCameraStatus status = Camera.CameraInit(psub, sName, IntPtr.Zero, ref m_iCameraIDs[i]);
                 if (status != emDSCameraStatus.STATUS_OK)
                     throw new Exception(string.Format("无法初始化相机，原因是: {0}", status.ToString()));
-               
                 Camera.CameraSetOnceWB(m_iCameraIDs[i]);
                 int resIndex = GetIndex(m_iCameraIDs[i]);
                 Camera.CameraSetImageSizeSel(m_iCameraIDs[i], resIndex, true);
-                Camera.CameraSetAnalogGain(m_iCameraIDs[i], 0.8f);
+                Camera.CameraSetAeState(m_iCameraIDs[i], false);
+                Camera.CameraSetAnalogGain(m_iCameraIDs[i], 1.0f);
+             
+                Camera.CameraSetExposureTime(m_iCameraIDs[i],tenK * exposureTime);
                 Camera.CameraPlay(m_iCameraIDs[i]);
             }
-            Thread.Sleep(4000);
+            Thread.Sleep(2000);
             bInitialized = true;
         }
 
@@ -101,7 +106,7 @@ namespace CameraControl
 
             for (int i = 0; i < capabilites.Count; i++)
             {
-                if (capabilites[i].IndexOf("2592") != -1)
+                if (capabilites[i].IndexOf("2048") != -1)
                     return i;
             }
             throw new Exception("相机不支持该分辨率!");
@@ -126,6 +131,22 @@ namespace CameraControl
             }
         }
 
+        public void SetExposureTime(ulong time)
+        {
+            //exposureTime = time;
+            if (m_iCameraIDs == null)
+            {
+                exposureTime = time;
+            }
+            else
+            {
+                Camera.CameraStop(m_iCameraIDs[0]);
+                Camera.CameraSetExposureTime(m_iCameraIDs[0], tenK * time);
+                Camera.CameraPlay(m_iCameraIDs[0]);
+            }
+            
+            
+        }
 
         public void Start(string sFile, int cameraID)
         {

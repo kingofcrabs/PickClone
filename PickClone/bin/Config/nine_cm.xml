@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <physicalRef>
-    <left>186</left>
-    <top>1427</top>
-    <right>1058</right>
-    <bottom>2300</bottom>
+    <top>0</top>
+    <bottom>1000</bottom>
+    <left>0</left>
+    <right>1000</right>
   </physicalRef>
+  <ExposureTime>146</ExposureTime>
   <SelectionMethod>biggest</SelectionMethod>
   <CloneCnt>50</CloneCnt>
 </Settings>

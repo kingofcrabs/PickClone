@@ -36,6 +36,7 @@ namespace PickClone
 
         void MainWindow_Closed(object sender, EventArgs e)
         {
+            Settings.Instance.Save();
             Pipeserver.Close();
         }
 
@@ -44,7 +45,6 @@ namespace PickClone
             lstSteps.DataContext = stepViewModel.StepsModel;
             var acquireImageForm = new AcquireImageForm();
             var settingsForm = new SettingsForm();
-
             acquireImageForm.Visibility = System.Windows.Visibility.Visible;
             settingsForm.Visibility = Visibility.Hidden;
             subForms.Add(acquireImageForm);

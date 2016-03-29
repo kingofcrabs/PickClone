@@ -4,8 +4,8 @@
 using namespace std;
 using namespace cv;
 static string dbgFolder = "d:\\temp\\";
-static int innderRadius = 310;
-static int outterRadius = 415;
+static int innderRadius = 630;
+static int outterRadius = 720;
 EngineImpl::EngineImpl()
 {
 
@@ -223,8 +223,9 @@ void EngineImpl::Load(string sFile)
 	int index = sFile.rfind("\\Data");
 	workingFolder = sFile.substr(0, index);
 	img = imread(sFile);
-	pyrDown(img, img);
-	Rect roi(270, 0, img.cols - 540, img.rows);
+	//pyrDown(img, img);
+	const int marginX = 200;
+	Rect roi(marginX, 0, img.cols - marginX*2, img.rows);
 	img = img(roi);
 	Rotate90(img, false);
 	imwrite(sFile, img);

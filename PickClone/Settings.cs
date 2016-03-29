@@ -13,11 +13,13 @@ namespace PickClone
     public class Settings
     {
         public FourPoints physicalRef;
+        public ulong ExposureTime{get;set;}
         public SelectionMethod SelectionMethod{get;set;}
         public int CloneCnt { get; set; }
         public Settings()
         {
             CloneCnt = 50;
+            ExposureTime = 140;
             SelectionMethod = SelectionMethod.biggest;
             physicalRef = new FourPoints();
         }

@@ -151,9 +151,12 @@ namespace PickClone
             return new Point((int)(pt.X / usableWidth * ImageSize.Width), (int)(pt.Y / usableHeight * ImageSize.Height));
         }
 
-        internal void SetMarkFlags(List<EngineDll.MPoint> pts)
+        internal List<MPoint> Markers
         {
-            this.pts = pts;
+            set{
+                this.pts = value;
+            }
+            
         }
 
         public System.Windows.Size ImageSize { get; set; }
