@@ -20,7 +20,10 @@
             <Setter Property="FontFamily" Value="SimSun" />
             <Setter Property="FontSize" Value="14" />
         </Style>
-
+        <Style TargetType="CheckBox">
+            <Setter Property="FontFamily" Value="SimSun" />
+            <Setter Property="FontSize" Value="14" />
+        </Style>
         <DataTemplate
            x:Key="ImageListbox"   DataType="Whatever">
             <Border x:Name="TheBorder" BorderBrush="LightBlue" BorderThickness="2" Padding="4" CornerRadius="4" Margin="2">

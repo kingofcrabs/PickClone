@@ -31,17 +31,30 @@ namespace PickClone.userControls
             Settings.Instance.Load();
             sliderExposureTime.Value = Settings.Instance.ExposureTime;
         }
+        public void OnNavigateTo(Stage stage)
+        {
+            this.Visibility = stage == m_CurStage ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
 
-       
+        }
+
+        #region ui controls
+        private void btnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            StartAcquire();
+        }
+
+        private void sliderExposureTime_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Settings.Instance.ExposureTime = (ulong)sliderExposureTime.Value;
+        }
 
         void renderGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             resultCanvas.Resize();
         }
+        #endregion
 
-
-           
-
+        #region acquisition
         void StartRealAcquire()
         {
             System.Threading.Thread t1 = new System.Threading.Thread
@@ -78,6 +91,31 @@ namespace PickClone.userControls
             }
         }
 
+        void imageAcquirer_onFinished(string errMsg)
+        {
+            this.Dispatcher.Invoke(
+             (Action)delegate()
+             {
+                 EnableButtons(true);
+                 if (errMsg != "")
+                 {
+                     resultCanvas.Children.Clear();
+                     SetInfo(errMsg + "请重新连接相机线。关闭程序，再来一次。", System.Windows.Media.Brushes.Red);
+                     return;
+                 }
+                 RefreshImage();
+                 resultCanvas.Resize();
+                 SetInfo("开始分析", false);
+                 DoEvents();
+                 Analysis();
+                 resultCanvas.Resize();
+
+             });
+
+        }
+        #endregion
+
+        #region analysis
         private void GenerateWorklist(List<MPoint> pts)
         {
             Worklist worklist = new Worklist();
@@ -121,7 +159,8 @@ namespace PickClone.userControls
             MPoint[] points = new MPoint[200];
             int cnt = 0;
             RefPositions refPositions = new RefPositions();
-            string markedImageFile = iEngine.MarkClones(new ConstrainSettings(10, 200), refPositions, ref cnt, ref points);
+            string markedImageFile = iEngine.MarkClones(new ConstrainSettings(Settings.Instance.MinArea, Settings.Instance.MaxArea),
+                refPositions, ref cnt, ref points);
             try
             {
                 CheckRefPoints(refPositions);
@@ -157,30 +196,8 @@ namespace PickClone.userControls
                 throw new Exception("未能找到参考点！");
                 
         }
+        #endregion
 
-        
-        void imageAcquirer_onFinished(string errMsg)
-        {
-            this.Dispatcher.Invoke(
-             (Action)delegate()
-             {
-                 EnableButtons(true);
-                 if (errMsg != "")
-                 {
-                     resultCanvas.Children.Clear();
-                     SetInfo(errMsg + "请重新连接相机线。关闭程序，再来一次。", System.Windows.Media.Brushes.Red);
-                     return;
-                 }
-                 RefreshImage();
-                 resultCanvas.Resize();
-                 SetInfo("开始分析",false);
-                 DoEvents();
-                 Analysis();
-                 resultCanvas.Resize();
-                 
-             });
-            
-        }
         #region refresh helper
         [SecurityPermissionAttribute(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public void DoEvents()
@@ -242,11 +259,6 @@ namespace PickClone.userControls
         
         #endregion
 
-        public void OnNavigateTo(Stage stage)
-        {
-            this.Visibility = stage == m_CurStage ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
-            
-        }
         #region pipeLine
         private void CreateNamedPipeServer()
         {
@@ -273,44 +285,7 @@ namespace PickClone.userControls
             }
         }
         #endregion
-
-        private void btnRefresh_Click(object sender, RoutedEventArgs e)
-        {
-            StartAcquire();
-        }
-
-        private void sliderExposureTime_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            Settings.Instance.ExposureTime = (ulong)sliderExposureTime.Value;
-        }
-
-
     }
 
 
-
-    //public static class ExtCanvas
-    //{
-    //     public static void UpdateBackGroupImage(this Canvas canvas, Bitmap bitmap)
-    //    {
-    //        BitmapImage bitmapImage;
-    //        System.Drawing.Bitmap cloneBitmpa = (System.Drawing.Bitmap)bitmap.Clone();
-    //        using (MemoryStream memory = new MemoryStream())
-    //        {
-    //            cloneBitmpa.Save(memory, ImageFormat.Png);
-    //            memory.Position = 0;
-    //            bitmapImage = new BitmapImage();
-    //            bitmapImage.BeginInit();
-    //            bitmapImage.StreamSource = memory;
-    //            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-    //            bitmapImage.EndInit();
-    //        }
-    //        ImageBrush imgBrush = new ImageBrush();
-    //        imgBrush.ImageSource = bitmapImage;
-    //        imgBrush.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
-    //        imgBrush.Viewbox = new Rect(0, 0, 1, 1);
-    //        imgBrush.Stretch = Stretch.Uniform;
-    //        canvas.Background = imgBrush;
-    //    }
-    //}
 }

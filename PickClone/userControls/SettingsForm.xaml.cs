@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using TestHSV;
+using System.Text.RegularExpressions;
+using System;
 
 namespace PickClone.userControls
 {
@@ -31,7 +24,7 @@ namespace PickClone.userControls
         {
             rdbMaxArea.IsChecked = Settings.Instance.SelectionMethod == SelectionMethod.biggest;
             rdbRandom.IsChecked = !rdbMaxArea.IsChecked;
-            txtCnt.DataContext = Settings.Instance;
+            this.DataContext = Settings.Instance;
             hsvGrid.Children.Add(new ColorWheel());
             hsvGrid.MouseEnter += hsvGrid_MouseEnter;
             hsvGrid.MouseLeave += hsvGrid_MouseLeave;
@@ -42,8 +35,19 @@ namespace PickClone.userControls
         {
             Point pt = e.GetPosition(hsvGrid);
             ColorWheel colorWheel = (ColorWheel)hsvGrid.Children[0];
-            Brush brush = new SolidColorBrush(colorWheel.GetColor(pt));
-            //ColorGrid.Background = brush;
+            Color currentColor = colorWheel.GetColor(pt);
+            Brush brush = new SolidColorBrush(currentColor);
+            string colorText = currentColor.ToString();
+            if((bool)rdbStart.IsChecked)
+            {
+                txtStartColor.Text = colorText;
+                gridStartFill.Background = brush;
+            }
+            else
+            {
+                txtEndColor.Text = colorText;
+                gridEndFill.Background = brush;
+            }
         }
 
         void hsvGrid_MouseLeave(object sender, MouseEventArgs e)
@@ -62,13 +66,17 @@ namespace PickClone.userControls
         }
 
 
-        private bool CheckSettings()
+        private void CheckSettings()
         {
-            int cntConstrain;
-            bool bok = int.TryParse(txtCnt.Text, out cntConstrain);
-            if (!bok)
-                SetInfo("克隆数量必须大于0");
-            return bok;
+            if( Settings.Instance.CloneCnt <= 0)
+                throw new Exception("克隆数量必须大于0！");
+            if( Settings.Instance.MinArea <=0 )
+                throw new Exception("最小面积必须大于0！");
+            if( Settings.Instance.MaxArea <=0 )
+                throw new Exception("最大面积必须大于0！");
+            if( Settings.Instance.MaxArea <= Settings.Instance.MinArea)
+                throw new Exception("最大面积必须大于最小面积！");
+            
         }
 
         private void SetInfo(string s, bool hasError = true)
@@ -79,12 +87,23 @@ namespace PickClone.userControls
 
         private void btnConfirm_Click(object sender, RoutedEventArgs e)
         {
-            bool bok = CheckSettings();
-            if (!bok)
+            try
+            {
+                CheckSettings();
+            }
+            catch(Exception ex)
+            {
+                SetInfo(ex.Message);
                 return;
-            //settings.cloneCnt = int.Parse(txtCnt.Text);
+            }
             Settings.Instance.SelectionMethod = (bool)rdbMaxArea.IsChecked ? SelectionMethod.biggest : SelectionMethod.random;
             Settings.Instance.Save();
+        }
+        
+        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
         }
     }
 }

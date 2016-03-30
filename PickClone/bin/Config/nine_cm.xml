@@ -9,4 +9,6 @@
   <ExposureTime>124</ExposureTime>
   <SelectionMethod>biggest</SelectionMethod>
   <CloneCnt>50</CloneCnt>
+  <MaxArea>180</MaxArea>
+  <MinArea>30</MinArea>
 </Settings>

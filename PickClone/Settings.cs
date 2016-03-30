@@ -10,15 +10,49 @@ using System.Xml.Serialization;
 namespace PickClone
 {
     [Serializable]
-    public class Settings
+    public class Settings : BindableBase
     {
         public FourPoints physicalRef;
         public ulong ExposureTime{get;set;}
         public SelectionMethod SelectionMethod{get;set;}
-        public int CloneCnt { get; set; }
+        int cloneCnt;
+        public int CloneCnt
+        {
+            get { return cloneCnt; }
+            set
+            {
+                SetProperty(ref cloneCnt, value);
+            }
+        }
+        int maxArea;
+        public int MaxArea
+        {
+            get
+            {
+                return maxArea;
+            }
+            set
+            {
+                SetProperty(ref maxArea, value);
+            }
+        }
+        int minArea;
+        public int MinArea
+        {
+            get
+            {
+                return minArea;
+            }
+            set
+            {
+                SetProperty(ref minArea, value);
+            }
+        }
         public Settings()
         {
             CloneCnt = 50;
+            MaxArea = 200;
+            MinArea = 10;
             ExposureTime = 140;
             SelectionMethod = SelectionMethod.biggest;
             physicalRef = new FourPoints();

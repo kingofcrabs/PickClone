@@ -7,40 +7,73 @@
              d:DesignHeight="700" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="100"/>
-            <RowDefinition Height= "*"/>
-            <RowDefinition Height= "120"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="240"/>
-            <ColumnDefinition Width= "*"/>
-        </Grid.ColumnDefinitions>
-
-        <GroupBox Name="basic" Header="基本设置">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="3*"/>
-                </Grid.ColumnDefinitions>
-                <Label Content="数量：" VerticalAlignment="Center" />
-                <TextBox Name="txtCnt" Text="{Binding Path=CloneCnt}" VerticalAlignment="Center" TextWrapping="Wrap"  Grid.Column="1"/>
-                <Label Grid.Row="1" VerticalAlignment="Center" Content="筛选方法："/>
-                <RadioButton Name="rdbMaxArea" Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" Content="面积最大" IsChecked="True"/>
-                <RadioButton Name="rdbRandom" Grid.Row="1" Grid.Column="2"  VerticalAlignment="Center" Content="随机"/>
-            </Grid>
-        </GroupBox>
-        <GroupBox Header="颜色设置" Grid.Row="1">
-            <StackPanel>
-                <Grid Name="hsvGrid" Height="240"></Grid>
-            </StackPanel>
-        </GroupBox>
-        <Grid></Grid>
+        <Grid>
+            <TabControl>
+                <TabItem Header="基本设置">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="数量：" VerticalAlignment="Center" />
+                        <TextBox Name="txtCnt" Text="{Binding Path=CloneCnt}" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox" TextWrapping="Wrap"  Grid.Column="1"/>
+                        <Label Grid.Row="1" VerticalAlignment="Center" Content="筛选方法："/>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" >
+                            <RadioButton Name="rdbMaxArea"  VerticalAlignment="Center" Content="面积大小" IsChecked="True"/>
+                            <RadioButton Name="rdbRandom" Margin="10,0,0,0" VerticalAlignment="Center" Content="随机"/>
+                        </StackPanel>
+                        <Label Content="面积设置：" VerticalAlignment="Center" Grid.Row="2"></Label>
+                        <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal">
+                            <Label VerticalAlignment="Center" Content="最小值："/>
+                            <TextBox VerticalAlignment="Center" Text="{Binding Path=MinArea, Mode=TwoWay}" Width="100"/>
+                            <Label VerticalAlignment="Center" Content="最大值："/>
+                            <TextBox VerticalAlignment="Center" Text="{Binding Path=MaxArea, Mode=TwoWay}" Width="100"/>
+                        </StackPanel>
+                        
+                       
+                    </Grid>
+                </TabItem>
+                <TabItem Header="颜色设置">
+                    <StackPanel>
+                        <Grid Name="hsvGrid" Height="300" Width="300" HorizontalAlignment="Left"></Grid>
+                        <StackPanel Orientation="Horizontal" Height="50">
+                            <Label VerticalAlignment="Center" Content="选择："/>
+                            <RadioButton Name="rdbStart" IsChecked="True" Content="开始" VerticalAlignment="Center"/>
+                            <RadioButton Name="rdbEnd" Content="结束" Margin="20,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="开始:"/>
+                                <TextBox Name="txtStartColor" Text="" Width="100" Margin="10,0,0,0"/>
+                                <Grid Name="gridStartFill" Width="60" Margin="10,0,0,0"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <Label Content="结束:"/>
+                                <TextBox Name="txtEndColor" Text="" Width="100" Margin="10,0,0,0"/>
+                                <Grid Name="gridEndFill" Width="60" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10" VerticalAlignment="Center">
+                            <CheckBox Content="使用颜色过滤" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                    
+                </TabItem>
+            </TabControl>
+        </Grid>
+       
+       
         <Grid Grid.Row="4" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="4*"/>
@@ -51,8 +84,6 @@
                 <TextBox Name="txtInfo" IsReadOnly="True" Margin="0,30,0,10" VerticalAlignment="Stretch" />
             </Grid>
             <Button Content="确定" Name="btnConfirm" Grid.Column="1" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Width="100" Height="32" Click="btnConfirm_Click"/>
-
-
         </Grid>
     </Grid>
 </UserControl>
