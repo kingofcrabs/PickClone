@@ -23,7 +23,7 @@ namespace PickClone
         int zEnd = int.Parse(ConfigurationManager.AppSettings["zEnd"]);
         int wasteGrid = int.Parse(ConfigurationManager.AppSettings["wasteGrid"]);
         EVOModel model = GetModel(ConfigurationManager.AppSettings["EVOModel"]);
-
+        int lightGrid = int.Parse(ConfigurationManager.AppSettings["lightGrid"]);
         private static EVOModel GetModel(string sModel)
         {
             Dictionary<string, EVOModel> strModelPairs = new Dictionary<string, EVOModel>();
@@ -66,7 +66,9 @@ namespace PickClone
             List<string> strs = new List<string>();
             strs.Add("W;");
             int ditiMask = GetTipSelection(batchPts.Count());
-            strs.Add(string.Format("B;GetDiti2({0},\"DiTi 1000ul LiHa\",0,0,10,70);",ditiMask ));
+            strs.Add(string.Format("B;GetDiti2({0},\"DiTi 200ul LiHa\",0,0,10,70);",ditiMask ));
+            string sMoveLiha = string.Format("B;MoveLiha({0},{1},0,1,\"02021\",0,1,0,10,0,0);", 1, lightGrid);
+            strs.Add(sMoveLiha);
             int i = 0;
             foreach(var pt in batchPts)
             {

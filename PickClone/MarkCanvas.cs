@@ -93,7 +93,6 @@ namespace PickClone
             dc.DrawText(text,ptUI);
             if(pt.isCurrent)
             {
-                
                 FormattedText curPosition = new FormattedText(string.Format("x:{0},y:{1}",
                     Calibration.Instance.ConvertX(pt.x), Calibration.Instance.ConvertY(pt.y)), 
                     CultureInfo.CurrentCulture,

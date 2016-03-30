@@ -5,7 +5,7 @@ using namespace std;
 using namespace cv;
 static string dbgFolder = "d:\\temp\\";
 static int innderRadius = 630;
-static int outterRadius = 720;
+static int outterRadius = 730;
 EngineImpl::EngineImpl()
 {
 
@@ -124,11 +124,18 @@ vector<vector<cv::Point>> EngineImpl::MarkAllContours(Mat& src,ConstrainSettings
 	Mat gray;
 	RemovePtsNotInROI(tmp, ptMass);
 	cvtColor(tmp, gray, CV_BGR2GRAY);
-	threshold(gray, gray, 200, 255, 0);
-#if _DEBUG
-	imwrite(dbgFolder + "threshold.jpg", gray);
+	//equalizeHist(gray, gray);
+	int blockSize = 25;
+	int constValue = 10;
+	Mat adaptive;
+	adaptiveThreshold(gray, adaptive, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY, blockSize, constValue);
+	imwrite(dbgFolder + "adaptive.jpg", adaptive);
+#if _DEBUG	//threshold(gray, gray, 200, 255, 0);
+	erode(adaptive, adaptive, Mat(), Point(-1, -1), 3);
+	imwrite(dbgFolder + "erode.jpg", adaptive);
 #endif
-	FindContours(gray, contours, minPts, maxPts);
+	//threshold(gray, gray, 200, 255, 0);
+	FindContours(adaptive, contours, minPts, maxPts);
 	for (int i = 0; i< contours.size(); i++)
 	{
 		

@@ -33,7 +33,7 @@
             <StackPanel  Grid.Column="1">
                 <StackPanel Orientation="Horizontal" Margin="10,20,0,0">
                     <Label Content="曝光时间ms："/>
-                    <Slider Name="sliderExposureTime" Value="140" IsSnapToTickEnabled="True"  AutoToolTipPlacement="BottomRight" Width="120" Maximum="180" Minimum="120" SmallChange="1" LargeChange="10" ValueChanged="sliderExposureTime_ValueChanged"/>
+                    <Slider Name="sliderExposureTime" Value="140" IsSnapToTickEnabled="True"  AutoToolTipPlacement="BottomRight" Width="120" Maximum="180" Minimum="100" SmallChange="1" LargeChange="10" ValueChanged="sliderExposureTime_ValueChanged"/>
                     <TextBlock Text="{Binding ElementName=sliderExposureTime, Path=Value}"/>
             </StackPanel>
             <Button Content="刷新" Grid.Column="1" Name="btnRefresh" Click="btnRefresh_Click" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="96" Height="32"/>
