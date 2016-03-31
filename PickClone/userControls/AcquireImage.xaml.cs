@@ -2,6 +2,7 @@
 using EngineDll;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Security.Permissions;
@@ -28,7 +29,15 @@ namespace PickClone.userControls
             CreateNamedPipeServer();
             imageAcquirer.onFinished += imageAcquirer_onFinished;
             renderGrid.SizeChanged += renderGrid_SizeChanged;
-            Settings.Instance.Load();
+            try
+            {
+                Settings.Instance.Load();
+            }
+            catch(Exception ex)
+            {
+                ;
+            }
+            
             sliderExposureTime.Value = Settings.Instance.ExposureTime;
         }
         public void OnNavigateTo(Stage stage)
@@ -153,7 +162,9 @@ namespace PickClone.userControls
             IEngine iEngine = new IEngine();
             string sImgPath = FolderHelper.GetLatestImagePath();
 #if DEBUG
-            File.Copy(sImgPath, FolderHelper.GetDataFolder() + "test.jpg",true);
+            bool bUseTestImage = bool.Parse(ConfigurationManager.AppSettings["useTestImage"]);
+            if(!bUseTestImage)
+                File.Copy(sImgPath, FolderHelper.GetDataFolder() + "test.jpg",true);
 #endif
             iEngine.Load(sImgPath);
             MPoint[] points = new MPoint[200];
